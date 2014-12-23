@@ -43,6 +43,7 @@ node /^stmonleader1/ {
   include rjil::ceph::mon
   include rjil::ceph::osd
   include rjil::ceph::radosgw
+  include rjil::jiocloud::consul::consul_alerts
 
   rjil::jiocloud::consul::service { 'stmonleader':
     port          => 6789,

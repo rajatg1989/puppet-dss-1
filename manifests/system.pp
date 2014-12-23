@@ -51,7 +51,7 @@ class rjil::system(
   rjil::test {'check_timezone.sh':}
 
   Anchor['rjil::system::start'] -> Class['::timezone'] -> Anchor['rjil::system::end']
-  contain rjil::system::ntp
+  #contain rjil::system::ntp #hardware team maintaining it 
 
   ## apt and accounts have circular dependancy, so making both of them dependant to anchors
   anchor { 'rjil::system::start':
