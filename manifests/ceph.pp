@@ -57,9 +57,9 @@ class rjil::ceph (
     require => Class['::ceph::conf']
   }
 
-  include ntp
+  #include ntp
 
-  Service[ntp] -> Package[ceph]
+  #Service[ntp] -> Package[ceph]
 
   if $storage_cluster_network {
     $storage_cluster_network_orig = $storage_cluster_network
