@@ -1,0 +1,94 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+require 'yaml'
+
+Vagrant.configure("2") do |config|
+
+  default_flavor = 'small'
+  default_image = 'trusty'
+
+  # allow users to set their own environment
+  # which effect the hiera hierarchy and the
+  # cloud file that is used
+  environment = ENV['env'] || 'vagrant-vbox'
+  layout = ENV['layout'] || 'full'
+  map = ENV['map'] || environment
+
+  config.vm.provider :virtualbox do |vb, override|
+    vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+  end
+
+  config.vm.provider "lxc" do |v, override|
+    override.vm.box = "fgrehm/trusty64-lxc"
+  end
+
+  last_octet = 41
+  env_data = YAML.load_file("environment/#{layout}.yaml")
+
+  map_data = YAML.load_file("environment/#{map}.map.yaml")
+
+  machines = {}
+  env_data['resources'].each do |name, info|
+    (1..info['number']).to_a.each do |idx|
+      machines["#{name}#{idx}"] = info
+    end
+  end
+
+  machines.each do |node_name, info|
+
+    config.vm.define(node_name) do |config|
+
+      config.vm.provider :virtualbox do |vb, override|
+        image = info['image'] || default_image
+        override.vm.box = map_data['image']['virtualbox'][image]
+
+        flavor = info['flavor'] || default_flavor
+        vb.memory = map_data['flavor'][flavor]['ram']
+        vb.cpus = map_data['flavor'][flavor]['cpu']
+      end
+      
+      config.vm.synced_folder("my_scripts/", '/etc/data/')
+
+      # Currently when virtual machine comes up, it gets a 172 IP from
+      # the internal DHCP of virtualbox, after the virtual machine comes up, the 
+      # DHCP server is disabled and the below command is executed on the VM so that
+      # it gets the IP from DHCP server on HTTPPROXY vm
+      config.vm.provision 'shell', :inline =>
+      'ifdown eth1;ifup eth1'
+
+      config.vm.host_name = "#{node_name}.domain.name"
+
+      "echo env=#{environment} > /etc/facter/facts.d/env.txt"
+
+      if ENV['http_proxy']
+        config.vm.provision 'shell', :inline =>
+        "echo \"Acquire::http { Proxy \\\"#{ENV['http_proxy']}\\\" }\" > /etc/apt/apt.conf.d/03proxy"
+        config.vm.provision 'shell', :inline =>
+        "echo http_proxy=#{ENV['http_proxy']} >> /etc/environment"
+      end
+
+
+      if ENV['https_proxy']
+        config.vm.provision 'shell', :inline =>
+        "echo https_proxy=#{ENV['https_proxy']} >> /etc/environment"
+      end
+      config.vm.provision 'shell', :inline =>
+        "echo no_proxy='127.0.0.1,169.254.169.254,localhost,consul,jiocloud.com' >> /etc/environment"
+      # run apt-get update and install pip
+      unless ENV['NO_APT_GET_UPDATE'] == 'true'
+        config.vm.provision 'shell', :inline =>
+        'apt-get update; apt-get install -y git curl;'
+      end
+
+ 
+      net_prefix = ENV['NET_PREFIX'] || "192.168.100.0"
+      nic_adapter= ENV['NIC_ADAPTER'] || `echo "No environment variable NIC_ADAPTER, set the NIC_ADAPTER you want to place the VM";exit 100`
+      if node_name == 'httpproxy1'
+        config.vm.network  "private_network", :ip => "192.168.100.10", :netmask => "255.255.255.0", :name => nic_adapter, :adapter => 2
+      else
+        config.vm.network "private_network", :type => :dhcp, :name => nic_adapter, :adapter => 2
+      end
+    end
+  end
+end
