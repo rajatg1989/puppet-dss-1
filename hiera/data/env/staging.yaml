@@ -1,0 +1,66 @@
+rjil::jiocloud::consul::service::interval: "10s"
+
+rjil::system::apt::proxy: "http://10.140.192.30:10000/"
+
+public_address: "%{ipaddress_10_140_13_0_26}"
+public_interface: "%{interface_10_140_13_0_26}"
+private_address: "%{ipaddress_10_140_13_0_26}"
+private_interface: "%{interface_10_140_13_0_26}"
+
+keystone_public_address: "dss-dev-test.jiocloud.com"
+keystone_private_address: "dss-dev-test.jiocloud.com"
+radosgw_public_address: "dss-dev-test.jiocloud.com"
+radosgw_internal_address: "dss-dev-test.jiocloud.com"
+
+rjil::system::proxies:
+  "no":
+    url: "127.0.0.1,localhost,consul,jiocloudcom"
+  http:
+    url: "http://10.140.192.30:10000/"
+  https:
+    url: "http://10.140.192.30:10000/"
+
+rjil::ceph::osd::osds:
+    - sdb
+    - sdc
+    - sdd
+    - sde
+    - sdf
+    - sdg
+    - sdh
+    - sdi
+    - sdj
+    - sdk
+    - sdl
+    - sdm
+    - sdn
+    - sdo
+    - sdp
+    - sdq
+    - sdr
+    - sds
+    - sdt
+    - sdu
+    - sdv
+    - sdw
+    - sdx
+    - sdy
+    - sdz
+
+rjil::system::accounts::active_users: [hkumar,jenkins,consul,anshup,amar,harshalgupta,bafna,abhidixit]
+rjil::system::accounts::sudo_users:
+  admin:
+    users: [hkumar,jenkins,consul,anshup,amar,harshalgupta,bafna,abhidixit]
+
+rjil::jiocloud::dns::entries:
+  object-storage-dev-test.jiocloud.com:
+    cname: global.haproxy.service.consul
+
+rjil::base::self_signed_cert: true
+
+rjil::system::apt::enable_puppetlabs: false
+
+rjil::ceph::osd::autodetect: false
+rjil::ceph::osd::osd_journal_size: 10
+rjil::ceph::mon::pool_pg_num: 32
+

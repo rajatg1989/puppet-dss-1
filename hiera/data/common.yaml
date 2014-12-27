@@ -629,6 +629,75 @@ rjil::system::apt::repositories:
       Chk4NnD90SYZt36sTLITe5O/BgYlRMqVo+bVj0tmjMJP/B4PZjABX7A=
       =iZW7
       -----END PGP PUBLIC KEY BLOCK-----
+  ceph:
+    location: 'http://apt.overcastcloud.com/bafnag/bafnag'
+    release: 'overcast'
+    repos: 'main'
+    include_src: false
+    key: '3EC5F98AE2B38E1C'
+    key_content: |
+      -----BEGIN PGP PUBLIC KEY BLOCK-----
+      Version: GnuPG v1
+      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
+      3BOR4f8sylXC8j7oG2TIeQ==
+      =+F6h 
+      -----END PGP PUBLIC KEY BLOCK-----
+
   ubuntu:
     location: 'http://in.archive.ubuntu.com/ubuntu'
     release: 'trusty'

@@ -1,17 +1,17 @@
 resources:
-  stmonleader:
+  dssmonleader:
     number: 1
     flavor: storage
     image: trusty
     networks: default
     boot_volume: default_volume
-  stmon:
+  dssmon:
     number: 2
     flavor: storage
     image: trusty
     networks: default
     boot_volume: default_volume
-  st:
+  dssst:
     number: 1
     flavor: storage
     image: trusty
