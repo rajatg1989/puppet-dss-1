@@ -5,6 +5,7 @@ export git_protocol=https
 
 override_dh_install:
 	apt-get --assume-yes install ruby
+	apt-get --assume-yes install git
 	gem install librarian-puppet-simple --no-ri --no-rdoc
 	rm -f $(CURDIR)/debian/puppet-jiocloud/usr/share/hiera/hiera.yaml
 	librarian-puppet install --puppetfile=$(CURDIR)/Puppetfile  --path=$(CURDIR)/modules
