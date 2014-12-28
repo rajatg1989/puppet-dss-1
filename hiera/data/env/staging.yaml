@@ -1,7 +1,5 @@
 rjil::jiocloud::consul::service::interval: "10s"
 
-rjil::system::apt::proxy: "http://10.140.192.30:10000/"
-
 public_address: "%{ipaddress_10_140_13_0_26}"
 public_interface: "%{interface_10_140_13_0_26}"
 private_address: "%{ipaddress_10_140_13_0_26}"
@@ -44,8 +42,6 @@ rjil::ceph::osd::osds:
     - sdv
     - sdw
     - sdx
-    - sdy
-    - sdz
 
 rjil::system::accounts::active_users: [hkumar,jenkins,consul,anshup,amar,harshalgupta,bafna,abhidixit]
 rjil::system::accounts::sudo_users:
