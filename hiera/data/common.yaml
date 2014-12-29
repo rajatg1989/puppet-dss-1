@@ -631,7 +631,7 @@ rjil::system::apt::repositories:
       -----END PGP PUBLIC KEY BLOCK-----
   ceph:
     location: 'http://apt.overcastcloud.com/bafnag/bafnag'
-    pin: '500'
+    pin: '600'
     release: 'overcast'
     repos: 'main'
     include_src: false
