@@ -773,6 +773,19 @@ contrail::config::quota_virtual_network: 5
 rjil::ceph::fsid: fac04d85-db48-4564-b821-deebda046261
 ceph::conf::fsid: "%{hiera('rjil::ceph::fsid')}"
 
+##Global Ceph conf
+ceph::conf::pool_default_pg_num: 16384
+ceph::conf::pool_default_size: 3
+ceph::conf::pool_default_min_size: 2
+ceph::conf::journal_size_mb: 4096
+ceph::conf::filestore_min_sync_interval: 10
+ceph::conf::filestore_max_sync_interval: 15
+ceph::conf::filestore_op_threads: 64
+ceph::conf::rgw_thread_pool_size: 128
+ceph::conf::debug_rgw: 5
+ceph::conf::osd_disk_threads: 4
+ceph::conf::osd_op_threads: 10
+
 rjil::ceph::storage_cluster_if: "%{hiera('private_interface')}"
 rjil::ceph::public_if: "%{hiera('public_interface')}"
 
