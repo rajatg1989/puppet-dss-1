@@ -1,2 +1,0 @@
-rjil::ceph::mon::mon_config::leader: true
-rjil::jiocloud::consul_role: bootstrapserver
