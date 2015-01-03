@@ -1039,7 +1039,6 @@ It make sense to create a wrapper script to for your other build environments:
     bash -x build_scripts/deploy.sh
 
 ## supporting devs
-
 we want to better support project devs.
 
 here is what I envision:
