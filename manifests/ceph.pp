@@ -47,7 +47,7 @@ class rjil::ceph (
   $public_network         = undef,
   $public_if              = eth0,
   $osd_journal_type       = 'filesystem',
-  $pool_default_size      = 3
+  $pool_default_size      = undef
 ) {
 
   anchor {'rjil::ceph::start':

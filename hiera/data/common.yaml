@@ -775,7 +775,8 @@ ceph::conf::fsid: "%{hiera('rjil::ceph::fsid')}"
 
 ##Global Ceph conf
 ceph::conf::pool_default_pg_num: 16384
-ceph::conf::pool_default_size: 3
+rjil::ceph::pool_default_size: 3
+ceph::conf::pool_default_size:  "%{hiera('rjil::ceph::pool_default_size)}"
 ceph::conf::pool_default_min_size: 2
 ceph::conf::journal_size_mb: 4096
 ceph::conf::filestore_min_sync_interval: 10
