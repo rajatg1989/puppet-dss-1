@@ -43,10 +43,10 @@ rjil::ceph::osd::osds:
     - sdw
     - sdx
 
-rjil::system::accounts::active_users: [hkumar,jenkins,consul,anshup,amar,harshalgupta,bafna,abhidixit]
+rjil::system::accounts::active_users: [rahul,harshalgupta,bafna,abhidixit,shivanshu21]
 rjil::system::accounts::sudo_users:
   admin:
-    users: [hkumar,jenkins,consul,anshup,amar,harshalgupta,bafna,abhidixit]
+    users: [rahul,harshalgupta,bafna,abhidixit,shivanshu21]
 
 rjil::jiocloud::dns::entries:
   object-storage-dev-test.jiocloud.com:
