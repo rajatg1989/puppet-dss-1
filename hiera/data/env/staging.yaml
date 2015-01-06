@@ -14,9 +14,9 @@ rjil::system::proxies:
   "no":
     url: "127.0.0.1,localhost,consul,jiocloudcom"
   http:
-    url: "http://10.140.192.30:10000/"
+    url: "http://10.140.218.59:3128/"
   https:
-    url: "http://10.140.192.30:10000/"
+    url: "http://10.140.218.59:3128/"
 
 rjil::ceph::osd::osds:
     - sdb
