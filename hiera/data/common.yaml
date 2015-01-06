@@ -842,7 +842,7 @@ rjil::ceph::fsid: fac04d85-db48-4564-b821-deebda046261
 ceph::conf::fsid: "%{hiera('rjil::ceph::fsid')}"
 
 ##Global Ceph conf
-ceph::conf::pool_default_pg_num: 16384
+ceph::conf::pool_default_pg_num: 512
 rjil::ceph::pool_default_size: 3
 ceph::conf::pool_default_size:  "%{hiera('rjil::ceph::pool_default_size)}"
 ceph::conf::pool_default_min_size: 2
