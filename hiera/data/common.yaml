@@ -631,6 +631,7 @@ rjil::system::apt::repositories:
       -----END PGP PUBLIC KEY BLOCK-----
   local:
     location: 'http://10.140.221.229/apt/bafna/bafna'
+    architecture: 'amd64'
     pin: '800'
     release: 'jiocloud'
     repos: 'main'
@@ -700,6 +701,7 @@ rjil::system::apt::repositories:
       -----END PGP PUBLIC KEY BLOCK-----
   ceph:
     location: 'http://apt.overcastcloud.com/bafnag/bafnag'
+    architecture: 'amd64'
     pin: '600'
     release: 'overcast'
     repos: 'main'
