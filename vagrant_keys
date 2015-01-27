@@ -1,0 +1,2 @@
+export NIC_ADAPTER=vboxnet0
+export consul_discovery_token=token_value

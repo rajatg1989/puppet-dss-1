@@ -15,9 +15,9 @@ class rjil::base (
   # tht certificate as it is required to do api calls to any openstack services
   # in case of ssl enabled.
   ##
-  if $self_signed_cert {
-    include rjil::trust_selfsigned_cert
-  }
+  #if $self_signed_cert {
+  #  include rjil::trust_selfsigned_cert
+  #}
 
   ##
   # New kind of ipaddress and interface facts (ipaddress and interface based on

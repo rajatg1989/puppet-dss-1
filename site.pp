@@ -3,11 +3,6 @@ Exec {
   logoutput => true
 }
 
-node /^bootstrap\d+/ {
-  include rjil::base
-  include rjil::jiocloud::consul::consul_alerts
-}
-
 ##
 # setup ceph configuration and osds on st nodes
 # These nodes wait at least one stmon to be registered in consul.
