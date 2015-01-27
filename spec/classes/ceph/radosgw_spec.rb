@@ -10,7 +10,6 @@ describe 'rjil::ceph::radosgw' do
       'ceph::radosgw::keystone_admin_token'         => 'token',
       'ceph::radosgw::mon_key'                      => 'mon-key',
       'radosgw_port'                                => '80',
-      'openstack_extras::auth_file::admin_password' => 'pass',
     }
   end
 

@@ -1,11 +1,6 @@
 git_protocol=ENV['git_protocol'] || 'git'
 base_url = "#{git_protocol}://github.com"
 
-
-mod 'puppetlabs/haproxy',
-  :git => "#{base_url}/puppetlabs/puppetlabs-haproxy",
-  :ref => '1.0.0'
-
 mod 'puppetlabs/inifile',
   :git => "#{base_url}/puppetlabs/puppetlabs-inifile",
   :ref => 'ab21bd39fde35b53ae00c44c7b1970b42276d29b'
@@ -30,14 +25,9 @@ mod 'saz/timezone',
   :git => "#{base_url}/saz/puppet-timezone",
   :ref => 'v2.0.0'
 
-mod 'puppetlabs/apache',
-  :git => "#{base_url}/puppetlabs/puppetlabs-apache",
-  :ref => '1.2.0'
-
 mod 'puppetlabs/apt',
   :git => "#{base_url}/puppetlabs/puppetlabs-apt",
   :ref => '1.8.0'
-
 
 mod 'puppetlabs/concat',
   :git => "#{base_url}/puppetlabs/puppetlabs-concat",
@@ -45,12 +35,7 @@ mod 'puppetlabs/concat',
 
 mod 'enovance/ceph',
   :git => "#{base_url}/bafna/puppet-ceph",
-  :ref => 'staging'
-
-
-mod 'puppetlabs/mysql',
-  :git => "#{base_url}/puppetlabs/puppetlabs-mysql",
-  :ref => '2.2.x'
+  :ref => 'dev'
 
 mod 'puppetlabs/stdlib',
   :git => "#{base_url}/puppetlabs/puppetlabs-stdlib",
