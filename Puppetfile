@@ -45,7 +45,7 @@ mod 'puppetlabs/concat',
 
 mod 'enovance/ceph',
   :git => "#{base_url}/bafna/puppet-ceph",
-  :ref => 'svn_to_git_2'
+  :ref => 'staging'
 
 
 mod 'puppetlabs/mysql',
@@ -83,4 +83,12 @@ mod 'rodjek/logrotate',
 mod 'pdxcat/collectd',
   :git => "#{base_url}/pdxcat/puppet-module-collectd",
   :ref => 'v3.2.0'
+
+mod 'stephenrjohnson/puppet',
+  :git => "#{base_url}/stephenrjohnson/puppetmodule",
+  :ref => '1.0.0'
+
+mod 'saz/dnsmasq',
+  :git => "#{base_url}/JioCloud/puppet-dnsmasq",
+  :ref => 'origin/master'
 

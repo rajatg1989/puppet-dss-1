@@ -10,7 +10,6 @@ describe 'rjil::test::ceph_radosgw' do
 
   let :hiera_data do
     {
-      'openstack_extras::auth_file::admin_password' => 'pass'
     }
   end
 

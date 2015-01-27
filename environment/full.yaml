@@ -5,16 +5,4 @@ resources:
     image: trusty
     networks: default
     boot_volume: default_volume
-  dssmon:
-    number: 2
-    flavor: storage
-    image: trusty
-    networks: default
-    boot_volume: default_volume
-  dssst:
-    number: 2
-    flavor: storage
-    image: trusty
-    networks: default
-    boot_volume: default_volume
 

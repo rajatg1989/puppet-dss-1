@@ -8,8 +8,6 @@ class rjil::test::ceph_radosgw (
   $port = 6000,
 ){
 
-  include openstack_extras::auth_file
-
   ensure_resource('package','python-swiftclient',{})
 
   file { "/usr/lib/jiocloud/tests/ceph_radosgw.sh":
