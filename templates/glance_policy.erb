@@ -1,0 +1,13 @@
+{
+  "context_is_admin": "role:admin",
+  "default": "",
+<% if @allow_upload_img_admin_only -%>
+  "upload_image": "role:admin",
+  "copy_from": "role:admin",
+<% else -%>
+  "upload_image": "",
+  "copy_from": "",
+<% end -%>
+  "publicize_image": "role:admin",
+  "manage_image_cache": "role:admin"
+}

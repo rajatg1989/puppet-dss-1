@@ -1,0 +1,9 @@
+LoadPlugin "threshold"
+<Plugin "threshold">
+  <Type "cpu">
+    Instance <%= @instance %>
+    FailureMin <%= @cpu_warn %>
+    Persist true
+    PersistOk true
+  </Type>
+<Plugin>

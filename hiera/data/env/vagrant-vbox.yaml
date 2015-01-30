@@ -1,0 +1,134 @@
+public_address: "%{ipaddress_192_168_100_0_24}"
+public_interface: "%{interface_192_168_100_0_24}"
+private_address: "%{ipaddress_192_168_100_0_24}"
+private_interface: "%{interface_192_168_100_0_24}"
+
+rjil::ceph::osd::autogenerate: true
+rjil::ceph::osd::autodisk_size: 10
+rjil::ceph::osd::osd_journal_size: 2
+
+# Only Qemu is supported on virtual testing environment
+nova::compute::libvirt::libvirt_virt_type: qemu
+
+# service check interval of 10s would be too often and thus causing
+# multiple instances of same chcecking scripts are running in parallel.
+# Just making large enough numer. This may need further discussion to get
+# more appropriate value.
+rjil::jiocloud::consul::service::interval: 120s
+
+contrail::vrouter::vrouter_physical_interface: eth1
+
+rjil::system::accounts::active_users: [soren,bodepd,hkumar,jenkins,consul,pandeyop,jaspreet,vivek,ahmad,vaidy,himanshu,rohit,amar,abhishekl,anshup,varunarya,prashant,punituee]
+
+rjil::system::accounts::sudo_users:
+  admin:
+    users: [soren,bodepd,hkumar,jenkins,consul,pandeyop,jaspreet,vivek,ahmad,vaidy,himanshu,rohit,amar,abhishekl,anshup,varunarya,prashant,punituee]
+ceph::conf::mon_timecheck_interval: 30
+
+##
+# rustedhalo_apt_repo_release override make sure people have option to choose
+# which repository to use.  Valid repos
+# trusty-unstable - raw packages, with unit testing and may be gate testing.
+#                   This is the place the package arived initially.
+# trusty-testing  - This is the repo used for acceptance testing, this is same as
+#                   trusty-unstable, but pipeline-at-prepare job takes snapshot
+#                   of trusty-unstable and sync to this repo. So it may take few
+#                   minutes to land the package here.
+# trusty          - This is the place the stable packages will live. All
+#                   packages that passed the acceptance testing will arrive
+#                   here. This is the same repo staging and production will be
+#                   using. It will take some time (typically 3-4 hours at this
+#                   moment) from when the package got created to reach here.
+##
+rustedhalo_apt_repo_release: 'trusty-testing'
+
+
+rjil::jiocloud::consul::encrypt: "%{consul_gossip_encrypt}"
+
+##
+# Running the system behind proxy need certain extra entries to be added
+# 1. to add proxy server configuration.
+# 2. To add internal ntp servers if default upstream_ntp_servers (public ntp servers)
+#    are not reachable.
+##
+
+#upstream_ntp_servers:
+# - 10.135.121.138
+
+#rjil::system::proxies:
+#  "no":
+#    url: "127.0.0.1,localhost,consul,jiocloud.com"
+#  "http":
+#    url: "http://10.135.121.138:3128"
+#  "https":
+#    url: "http://10.135.121.138:3128"
+
+rjil::jiocloud::dhcp::interfaces:
+  - eth1
+
+##
+# There must be dhcppools entries for subnets which are configured on
+# rjil::jiocloud::dhcp::interfaces, otherwise dhcp server will fail to start.
+##
+
+##
+# It seems this is becoming more complex so would need to move to manifests.
+# Just adding here to make sure this is functional, which would be moved to
+# manifests. Also currently undercloud controller is not added to consul, which
+# would also need to be added.
+##
+rjil::jiocloud::dhcp::dhcppools:
+  localnet:
+    network: "%{network_eth1}"
+    mask: "%{netmask_eth1}"
+  net1:
+    network: 10.10.10.0
+    mask: 255.255.255.0
+    range:
+      - 10.10.10.10
+      - 10.10.10.254
+    gateway: 10.10.10.1
+    oncommit_script: /usr/bin/python2.7
+    oncommit:
+      - 'set cip = binary-to-ascii(10, 8, ".", leased-address)'
+      - 'execute("/usr/bin/python2.7", "-m", "jiocloud.enroll",
+                  "--ilo_username", "%{hiera(''ilo_user'')}",
+                  "--ilo_password", "%{hiera(''ilo_password'')}",
+                  "--os_username", "ironic",
+                  "--os_tenant", "%{hiera(''ironic::api::admin_tenant_name'')}",
+                  "--os_password", "%{hiera(''ironic::keystone::auth::password'')}",
+                  "--os_auth_url", "%{hiera(''rjil::keystone::protocol'')}://%{ipaddress}:5000/%{hiera(''rjil::keystone::version'')}",
+                  "--nic", "3",
+                  "--ilo_address ", cip)'
+rjil::base::self_signed_cert: true
+tempest::admin_password: tempest_admin
+tempest::admin_username: tempest_admin
+
+rjil::neutron::contrail::fip_pools:
+  public:
+    network_name: public
+    subnet_name: public_subnet
+    cidr: 100.1.0.0/24
+    subnet_ip_start: 100.1.0.11
+    subnet_ip_end: 100.1.0.254
+    public: true
+  private_shared:
+    network_name: private_shared_net
+    subnet_name: private_shared_subnet
+    cidr: 99.0.0.0/24
+    public: false
+    tenants: ['tempest']
+
+contrail::vrouter::vgw_subnets: ['100.1.0.0/24']
+rjil::system::apt::env_repositories:
+  contrailv2:
+    location: 'http://jiocloud.rustedhalo.com/contrailv2'
+    release: 'trusty'
+    repos: 'main'
+    include_src: false
+
+ntp::servers:
+  - 10.140.221.235
+  - 10.140.221.232
+  - 10.140.221.236
+

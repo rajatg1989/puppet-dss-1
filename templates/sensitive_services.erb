@@ -1,0 +1,7 @@
+# managed by puppet
+# a list of services that should not be started
+# from package based actions. This file is called
+# from policy-rc.d
+<% @service_list.each do |service_name| -%>
+<%= service_name %>
+<% end -%>

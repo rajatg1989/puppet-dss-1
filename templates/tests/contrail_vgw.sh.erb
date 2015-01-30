@@ -1,0 +1,34 @@
+#!/bin/bash
+##
+final_rv=0
+
+## Check if vif has been created
+vif --list | grep <%= @vgw_interface %> ; rv=$?
+if [ $rv -ne 0 ]; then
+  msg_vif="VIF <%= @vgw_interface %> is not added"
+  final_rv=1
+fi
+
+## Check if interface has been added
+ifconfig | grep <%= @vgw_interface %> ;rv=$?
+if [ $rv -ne 0 ]; then
+  msg_ifconfig="The interface is down "
+  final_rv=1
+fi
+
+## Checking vrf for gateway (vgw) has been added
+curl http://localhost:8085/Snh_Inet4UcRouteReq?x=1 2>&1 | grep -q <%= @vgw_interface %>; rv=$?
+
+if [ $rv -ne 0 ]; then
+  msg_vrf="<%= @vgw_interface %> is not added to any VRFs"
+  final_rv=1
+fi
+
+if [ $final_rv -eq 0 ]; then
+  echo "OK: contrail vgw interface is up"
+  exit 0
+else
+  echo "CRITICAL: $msg_vif, $msg_ifconfig, $msg_vrf"
+  exit 2
+fi
+

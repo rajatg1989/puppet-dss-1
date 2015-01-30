@@ -1,0 +1,10 @@
+#!/bin/bash -e
+
+if [ "$1" = "configure" ]
+then
+	rsync -a /usr/share/hiera/ /etc/puppet/hiera
+fi
+
+#DEBHELPER#
+
+exit 0

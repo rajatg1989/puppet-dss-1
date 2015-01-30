@@ -1,0 +1,16 @@
+LoadPlugin "threshold"
+<Plugin "threshold">
+<% @disks.each do |disk| -%>
+  <Plugin "df">
+  Instance "<%= disk %>"
+    # alert if any disks become too full
+    <Type "percent_bytes">
+      Instance   <%= @instance %>
+      WarningMin <%= @disk_percent_warn %>
+      FailureMin <%= @disk_percent_fail %>
+      Persist true
+      PersistOk true
+    </Type>
+  </Plugin>
+<% end -%>
+</Plugin>

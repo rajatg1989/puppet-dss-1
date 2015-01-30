@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+test -f /root/openrc
+source /root/openrc
+<% @flavors.each do |flavor| -%>
+openstack -q flavor show <%= flavor[0] %>
+<% end -%>

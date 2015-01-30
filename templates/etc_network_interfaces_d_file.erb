@@ -1,0 +1,39 @@
+##
+# MANAGED BY PUPPET
+#
+# Interface <%= @interface %>
+<% if @onboot -%>
+auto <%= @interface %>
+<% end -%>
+iface <%= @interface %> <%= @family %> <%= @method %>
+<% if @macaddress -%>
+    hwaddress ether <%= @macaddress %>
+<% end -%>
+<% if @method == 'static' -%>
+    address <%= @ipaddress %>
+    netmask <%= @netmask %>
+  <% if @network -%>
+    network <%= @network %>
+  <% end -%>
+  <% if @broadcast -%>
+    broadcast <%= @broadcast %>
+  <% end -%>
+  <% if @gateway -%>
+    gateway <%= @gateway %>
+  <% end -%>
+  <% if ! @nameservers.empty? -%>
+    dns-nameservers <%= @nameservers.join(' ') %>
+  <% end -%>
+  <% if ! @searchdomains.empty? -%>
+    dns-search <%= @searchdomains.join(' ') %>
+  <% end -%>
+<% end -%>
+<% @options.each do |key, val| -%>
+  <% if val.is_a?(Array) -%>
+    <% val.each do |x| -%>
+    <%= key %> <%= x %>
+    <% end -%>
+  <% else -%>
+    <%= key %> <%= val %>
+  <% end -%>
+<% end -%>

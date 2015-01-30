@@ -1,0 +1,2 @@
+rjil::keystone::disable_db_sync: false
+rjil::jiocloud::consul_role: server

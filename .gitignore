@@ -1,0 +1,7 @@
+modules
+.vagrant
+spec/fixtures
+Gemfile.lock
+venv
+userdata.txt
+hiera/data/services.yaml

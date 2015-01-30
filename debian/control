@@ -1,0 +1,13 @@
+Source: puppet-dss
+Section: admin
+Priority: optional
+Maintainer: Gaurav Bafna <Gaurav.Bafna@ril.com>
+Build-Depends: debhelper (>= 8)
+Standards-Version: 3.9.5
+Homepage: https://github.com/JioCloudDSS/puppet-rjil
+
+Package: puppet-dss
+Architecture: all
+Depends: ${misc:Depends}, rsync
+Description: Complete collection of Puppet modules for JioCloud-DSS
+ This package contains all the modules used to run JioCloud-DSS

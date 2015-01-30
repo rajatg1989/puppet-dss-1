@@ -1,0 +1,16 @@
+description "Consul Alert"
+start on (local-filesystems and net-device-up IFACE!=lo)
+stop on runlevel [06]
+
+
+script
+  . /etc/environment
+  export http_proxy
+  export https_proxy
+  export no_proxy
+  exec /usr/bin/consul-alerts  start --watch-events --watch-checks --consul-dc <%= @consul_discovery_token %>
+end script 
+
+respawn
+respawn limit 10 10
+kill timeout 10

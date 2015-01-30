@@ -1,0 +1,10 @@
+image:
+  trusty: 9d25fe2d-cf31-4b05-8c58-f238ec78e633
+flavor:
+  small: 100
+  medium: 101
+  large: 102
+  storage: 102
+networks:
+   default:
+     - d7c83218-276b-4e4c-8ed1-1165b44c3a44

@@ -1,0 +1,7 @@
+public_address: "%{ipaddress_eth1}"
+public_interface: eth1
+private_address: "%{ipaddress_eth1}"
+private_interface: eth1
+rjil::base::self_signed_cert: true
+tempest::admin_password: tempest_admin
+tempest::admin_username: tempest_admin

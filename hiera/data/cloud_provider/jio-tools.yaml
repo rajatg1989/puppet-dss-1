@@ -1,0 +1,36 @@
+rjil::system::apt::proxy: "http://10.140.218.59:3128/"
+rjil::system::ntp::run_ntpdate: false
+ntp::servers:
+  - 10.140.221.235
+  - 10.140.221.232
+
+public_address: "%{ipaddress_10_140_221_224_28}"
+public_interface: "%{interface_10_140_221_224_28}"
+private_address: "%{ipaddress_10_140_221_224_28}"
+private_interface: "%{interface_10_140_221_224_28}"
+
+rjil::system::proxies:
+  "no":
+    url: "127.0.0.1,localhost,consul,jiocloud.com,jiocloudservices.com"
+  http:
+    url: "http://10.140.218.59:3128/"
+  https:
+    url: "http://10.140.218.59:3128/"
+
+rjil::system::accounts::active_users: [apache,consul,anshup,amar,vpramo,akash,soren,bodepd,mayankkapoor]
+rjil::system::accounts::sudo_users:
+  admin:
+    users: [apache,consul,anshup,amar,vpramo,akash,soren,bodepd,mayankkapoor]
+
+rjil::base::self_signed_cert: true
+
+rjil::jiocloud::consul_role: server
+rjil::jiocloud::consul::encrypt: "%{consul_gossip_encrypt}"
+
+pkgbuilder::public_ip: "10.140.221.236"
+pkgbuilder::public_port: "9000"
+pkgbuilder::db::db_name: "pkgbuilder"
+pkgbuilder::db::db_rootpassword: "db_password"
+pkgbuilder::db::db_username: "pkgbuilder"
+pkgbuilder::db::db_password: "change3M3"
+pkgbuilder::proxy: "%{rjil::system::apt::proxy}"

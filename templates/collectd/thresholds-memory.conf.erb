@@ -1,0 +1,11 @@
+LoadPlugin "threshold"
+<Plugin "threshold">
+  <Plugin "memory">
+    <Type "memory">
+      Instance <%= @instance %>
+      WarningMin  <%= @memory_warn %>
+      Persist true
+      PersistOk true
+    </Type>
+   </Plugin>
+</Plugin>

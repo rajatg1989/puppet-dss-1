@@ -1,0 +1,95 @@
+nodes:
+  bootstrap:
+    number: 1
+    flavor: bootstrap
+    image: trusty
+    disk: 10
+    networks:
+      - network: undercloud
+        securitygroups:
+        - jumphost
+        - default
+        assign_floating_ip: true
+  haproxy:
+    number: 1
+    flavor: haproxy
+    image: trusty
+    disk: 10
+    networks:
+      - network: undercloud
+        securitygroups:
+        - default
+  oc:
+    number: 1
+    flavor: oc
+    image: trusty
+    disk: 10
+    networks:
+      - network: undercloud
+        securitygroups:
+        - default
+  ocdb:
+    number: 1
+    flavor: ocdb
+    image: trusty
+    disk: 10
+    networks:
+      - network: undercloud
+        securitygroups:
+        - default
+        assign_floating_ip: true
+  ct:
+    number: 1
+    flavor: ct
+    image: trusty
+    disk: 10
+    networks:
+      - network: undercloud
+        securitygroups:
+        - default
+  stmonleader:
+    number: 1
+    flavor: storage
+    image: trusty
+    disk: 10
+    networks:
+      - network: undercloud
+        securitygroups:
+        - default
+  stmon:
+    number: 2
+    flavor: storage
+    image: trusty
+    disk: 10
+    networks:
+      - network: undercloud
+        securitygroups:
+        - default
+  cp:
+    number: 2
+    flavor: compute
+    image: trusty
+    disk: 10
+    networks:
+      - network: undercloud
+        securitygroups:
+        - default
+  gcp:
+    number: 1
+    flavor: compute
+    image: trusty
+    disk: 10
+    networks:
+      - network: undercloud
+        securitygroups:
+        - default
+networks:
+  undercloud:
+    cidr: 10.130.182.0/24
+securitygroups:
+  jumphost:
+  - cidr: 0.0.0.0/0
+    from_port: 22
+    to_port: 22
+    protocol: tcp
+  undercloud:

@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+test -f /root/openrc
+source /root/openrc
+<% if @ssl -%>
+/usr/lib/nagios/plugins/check_http -S -H <%= @api_address %> -p 9292
+<% else -%>
+/usr/lib/nagios/plugins/check_http -H <%= @api_address %> -p 9292
+<% end -%>
+glance image-list

@@ -1,0 +1,163 @@
+fixtures:
+  symlinks:
+    rjil: "#{source_dir}"
+  repositories:
+    haproxy:
+      repo: git://github.com/puppetlabs/puppetlabs-haproxy
+      ref: 1.0.0
+    inifile:
+      repo: git://github.com/puppetlabs/puppetlabs-inifile.git
+      ref: 41e2ddbc1cd861247e57d16b778cbe891602f509
+    openstack_extras:
+      repo: https://github.com/bodepd/puppet-openstack_extras
+    dhcp:
+      repo: https://github.com/JioCloud/puppetlabs-dhcp
+    heat:
+      repo: https://github.com/stackforge/puppet-heat
+    glance:
+      repo: https://github.com/stackforge/puppet-glance
+    keystone:
+      repo: https://github.com/stackforge/puppet-keystone
+    cinder:
+      repo: https://github.com/stackforge/puppet-cinder
+    neutron:
+      repo: https://github.com/jiocloud/puppet-neutron
+    memcached:
+      repo: git://github.com/saz/puppet-memcached
+      ref: fee24ce
+    vcsrepo:
+      repo: git://github.com/puppetlabs/puppetlabs-vcsrepo
+      ref: 1.2.0
+    tempest:
+      repo: git://github.com/jiocloud/puppet-tempest
+    ssh:
+      repo: https://github.com/saz/puppet-ssh
+      ref: v2.3.6
+    contrail:
+      repo: https://github.com/jiocloud/jiocloud-contrail
+      ref: 'origin/master'
+    sudo:
+      repo: https://github.com/saz/puppet-sudo
+      ref: 62b93da
+    timezone:
+      repo: https://github.com/saz/puppet-timezone
+      ref: v2.0.0
+    sysctl:
+      repo: https://github.com/duritong/puppet-sysctl
+      ref: 3b027e816818f2c1086075038ac9b4af1cadbc24
+    cassandra:
+      repo: https://github.com/msimonin/puppet-cassandra
+      ref: f781e1c87915eb8
+    redis:
+      repo: https://github.com/fsalum/puppet-redis
+      ref: 0.0.12
+    zookeeper:
+      repo: https://github.com/deric/puppet-zookeeper
+      ref: v0.2.4
+    java:
+      repo: https://github.com/puppetlabs/puppetlabs-java
+      ref: 1.1.2
+    staging:
+      repo: https://github.com/nanliu/puppet-staging
+      ref: 9c1c08af301dabe35c0d95ee7de9ab6ef2343139
+    archive:
+      repo: https://github.com/puppet-community/puppet-archive
+      ref: f875114ecb962a0d02b4496fab6a871ca1e637c1
+    apache:
+      repo: https://github.com/puppetlabs/puppetlabs-apache
+      ref: 1.2.0
+    ceph:
+      repo: https://github.com/jiocloud/puppet-ceph
+      ref: 'origin/svn_to_git_2'
+    apt:
+      repo: https://github.com/puppetlabs/puppetlabs-apt
+      ref: 1.8.0
+    cinder:
+      repo: https://github.com/stackforge/puppet-cinder
+      ref: 4.0.0
+    openstacklib:
+      repo: https://github.com/jiocloud/puppet-openstacklib
+      ref: origin/master
+    ironic:
+      repo: https://github.com/jiocloud/puppet-ironic
+      ref: origin/master
+    concat:
+      repo: https://github.com/puppetlabs/puppetlabs-concat
+      ref: 1.1.0
+    glance:
+      repo: https://github.com/stackforge/puppet-glance
+      ref: 4.0.0
+    keystone:
+      repo: https://github.com/stackforge/puppet-keystone
+      ref: 4.0.0
+    mysql:
+      repo: https://github.com/puppetlabs/puppetlabs-mysql
+      ref: 2.2.3
+    nova:
+      repo: https://github.com/jiocloud/puppet-nova
+      ref: origin/master
+    rabbitmq:
+      repo: https://github.com/puppetlabs/puppetlabs-rabbitmq
+      ref: 4.0.0
+    stdlib:
+      repo: https://github.com/puppetlabs/puppetlabs-stdlib
+      ref: 4.8.0
+    vswitch:
+      repo: https://github.com/stackforge/puppet-vswitch
+      ref: 0.3.0
+    puppet:
+      repo: https://github.com/stephenrjohnson/puppetmodule
+      ref: 1.0.0
+    dnsmasq:
+      repo: https://github.com/JioCloud/puppet-dnsmasq
+      ref: origin/master
+    consul:
+      repo: https://github.com/solarkennedy/puppet-consul
+      ref: 3128b476b1f6ea695cac1f772f262c078c853032
+    ntp:
+      repo: https://github.com/puppetlabs/puppetlabs-ntp
+      ref: 3.0.1
+    openstack_zeromq:
+      repo: https://github.com/JioCloud/puppet-openstack_zeromq
+    apt_mirror:
+      repo: https://github.com/jtopjian/puppet-apt_mirror
+      ref: origin/master
+    jenkins:
+      repo: https://github.com/jenkinsci/puppet-jenkins
+      ref: v1.2.0
+    reprepro:
+      repo: https://github.com/jtopjian/puppet-reprepro
+      ref: origin/master
+    dnsquery:
+      repo: https://github.com/dalen/puppet-dnsquery
+      ref: origin/master
+    network:
+      repo: https://github.com/adrienthebo/puppet-network
+      ref: 0.4.1
+    filemapper:
+      repo: https://github.com/adrienthebo/puppet-filemapper
+      ref: 1.1.3
+    orchestration_utils:
+      repo: https://github.com/jiocloud/puppet-orchestration_utils
+      ref: origin/master
+    squid3:
+      repo: https://github.com/bodepd/puppet-squid3
+      ref: origin/master
+    logrotate:
+      repo: https://github.com/rodjek/puppet-logrotate
+      ref: 89ee645e2350045be48df7ac3ef86cbe4cd9b096
+    collectd:
+      repo: https://github.com/pdxcat/puppet-module-collectd
+      ref: v3.2.0
+    mediawiki:
+      repo: https://github.com/jiocloud/puppet-mediawiki
+      ref: origin/master
+    omd:
+      repo: https://github.com/jiocloud/puppet-omd
+      ref: origin/master
+    docker:
+      repo: https://github.com/jiocloud/garethr-docker
+      ref: origin/master
+    pkgbuilder:
+      repo: https://github.com/jiocloud/pkgbuilder
+      ref: origin/master

@@ -1,0 +1,42 @@
+overcloud:
+  - shell:
+      cmd: "build_scripts/make_userdata.sh"
+  - provision:
+      stack: environment/full.yaml
+      userdata: userdata.txt
+  - shell:
+      type: remote
+      node: bootstrap1
+      cmd: "python -m jiocloud.orchestrate ping"
+      retry-for: 20m
+      retry-wait: 5s
+  - shell:
+      type: remote
+      node: bootstrap1
+      cmd: "python -m jiocloud.orchestrate trigger_update ${BUILD_NUMBER}"
+      retry-for: 10m
+      retry-wait: 5s
+  - shell:
+      type: remote
+      node: bootstrap1
+      cmd: 'echo "${ALL_NODES}" | tr " " "\n" | python -m jiocloud.orchestrate verify_hosts ${DEPLOY_ID}'
+      retry-for: 50m
+      retry-wait: 5s
+  - shell:
+      type: remote
+      node: bootstrap1
+      cmd: "python -m jiocloud.orchestrate check_single_version -v ${BUILD_NUMBER}"
+      retry-for: 40m
+      retry-wait: 5s
+  - shell:
+      type: remote
+      node: bootstrap1
+      cmd: "python -m jiocloud.orchestrate get_failures --hosts"
+      retry-for: 10m
+      retry-wait: 5s
+undercloud:
+  - shell:
+      cmd: "unset env_http_proxy env_https_proxy; build_scripts/make_userdata.sh > userdata.txt"
+  - provision:
+      stack: environment/undercloud.yaml
+      userdata: userdata.txt

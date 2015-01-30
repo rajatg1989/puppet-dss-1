@@ -1,0 +1,13 @@
+#!/bin/bash
+release="$(lsb_release -cs)"
+wget -O puppet.deb http://apt.puppetlabs.com/puppetlabs-release-${release}.deb
+wget -O jiocloud.deb http://jiocloud.rustedhalo.com/ubuntu/jiocloud-apt-${release}.deb
+dpkg -i puppet.deb
+dpkg -i jiocloud.deb
+apt-get update
+apt-get install -y puppet
+apt-get install -y software-properties-common
+apt-get install -y puppet-jiocloud
+sudo mkdir -p /etc/facter/facts.d
+echo 'etcd_discovery_token='%ETCD_DISCOVERY_TOKEN% > /etc/facter/facts.d/etcd.txt
+puppet apply --debug -e "include rjil::jiocloud"

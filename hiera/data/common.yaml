@@ -1,0 +1,1185 @@
+###################################
+######### Common Config ###########
+###################################
+
+##
+# Idea is to enable jumbo frames after completing initial setup.
+##
+mtu: 1500
+##
+# instead of assuming the ipaddess will be on specific network interface, just
+# provide the network in the format <network with dot replaced with>_<cidr>
+# This will avoid issues on using different nic on the servers because of any
+# reasons like nic port failures. It also fix the problem of the ip address
+# being moved to vhost0 interface in compute node.
+##
+public_address: "%{ipaddress_10_0_0_0_16}"
+public_interface: "%{interface_10_0_0_0_16}"
+private_address: "%{ipaddress_10_0_0_0_16}"
+private_interface: "%{interface_10_0_0_0_16}"
+
+###################################
+########  Database config #########
+###################################
+
+rjil::db::bind_address: "%{hiera('private_address')}"
+rjil::db::dbs:
+  nova:
+    user: "%{hiera('nova_db_user')}"
+    pass: "%{hiera('nova_db_password')}"
+  keystone:
+    user: "%{hiera('keystone_db_user')}"
+    pass: "%{hiera('keystone_db_password')}"
+  cinder:
+    user: "%{hiera('cinder_db_user')}"
+    pass: "%{hiera('cinder_db_password')}"
+  glance:
+    user: "%{hiera('glance_db_user')}"
+    pass: "%{hiera('glance_db_password')}"
+  ironic:
+    user: "%{hiera('ironic_db_user')}"
+    pass: "%{hiera('ironic_db_password')}"
+  neutron:
+    user: "%{hiera('neutron_db_user')}"
+    pass: "%{hiera('neutron_db_password')}"
+
+# Gets overridden for ocdb role
+rjil::keystone::disable_db_sync: true
+
+####################################
+####### Add cnames #################
+####################################
+##
+# The cnames are required to use ssl as the names should match the domain name
+# in the certificate.
+##
+
+
+rjil::jiocloud::dns::entries:
+  identity.jiocloud.com:
+    cname: lb.keystone.service.consul
+  volume.jiocloud.com:
+    cname: lb.cinder.service.consul
+  network.jiocloud.com:
+    cname: lb.neutron.service.consul
+  compute.jiocloud.com:
+    cname: lb.nova.service.consul
+  image.jiocloud.com:
+    cname: lb.glance.service.consul
+  object.jiocloud.com:
+    cname: lb.radosgw.service.consul
+  ironic.jiocloud.com:
+    cname: lb.ironic.service.consul
+
+####################################
+######## Openstack configs #########
+####################################
+
+keystone_public_address: identity.jiocloud.com
+keystone_private_address: identity.jiocloud.com
+
+nova_public_address: compute.jiocloud.com
+nova_internal_address: compute.jiocloud.com
+
+glance_public_address: image.jiocloud.com
+glance_internal_address: image.jiocloud.com
+
+cinder_public_address: volume.jiocloud.com
+cinder_internal_address: volume.jiocloud.com
+
+radosgw_public_address: object.jiocloud.com
+radosgw_internal_address: object.jiocloud.com
+
+neutron_public_address: network.jiocloud.com
+neutron_internal_address: network.jiocloud.com
+
+ironic_public_address: ironic.jiocloud.com
+ironic_internal_address: ironic.jiocloud.com
+
+########### Openstack Common config
+###################################
+
+admin_email: cloud.devops@ril.com
+db_host: mysql.service.consul
+debug: 'true'
+verbose: 'true'
+region: RegionOne
+rpc_backend: zmq
+api_protocol: https
+public_network_name: public
+
+########### auth for test user
+##################################
+
+rjil::openstack_objects::users:
+  "%{hiera('test_user_name')}":
+    password: "%{hiera('test_user_password')}"
+    user_tenant: "%{hiera('test_user_tenant')}"
+    create_network: false
+##
+# rjil::openstack_objects::tenants can be either a array of tenant names or a
+# hash of tenants with params for rjil::keystone::tenant
+##
+rjil::openstack_objects::tenants: ['mgmt_tenant','internal_tenant']
+
+##
+# rjil::openstack_objects::roles can be either a array of role names or a
+# hash of roles with params for rjil::keystone::role
+##
+rjil::openstack_objects::roles: ['tenant_admin','engineering']
+
+rjil::keystone::test_user::username: "%{hiera('test_user_name')}"
+rjil::keystone::test_user::tenant_name: "%{hiera('test_user_tenant')}"
+rjil::keystone::test_user::password: "%{hiera('test_user_password')}"
+openstack_extras::auth_file::admin_user: "%{hiera('test_user_name')}"
+openstack_extras::auth_file::admin_tenant: "%{hiera('test_user_tenant')}"
+openstack_extras::auth_file::admin_password: "%{hiera('test_user_password')}"
+openstack_extras::auth_file::controller_node: "%{hiera('keystone_public_address')}"
+openstack_extras::auth_file::keystone_protocol: "%{hiera('api_protocol')}"
+
+########### client install
+##################################
+openstack_extras::client::ceilometer: false
+
+########### Openstack ports
+##################################
+localbind_host: 127.0.0.1
+
+cinder_localbind_port: 18776
+cinder_port: 8776
+
+keystone_localbind_port: 15000
+keystone_port: 5000
+keystone_admin_localbind_port: 35358
+keystone_admin_port: 35357
+
+glance_api_localbind_port: 19292
+glance_api_port: 9292
+glance_registry_localbind_port: 19191
+glance_registry_port: 9191
+
+nova_osapi_localbind_port: 18774
+nova_osapi_port: 8774
+
+neutron_localbind_port: 19696
+neutron_port: 9696
+
+########### rabbitmq config
+###################################
+
+rjil::rabbitmq::rabbit_admin_user: "%{hiera('rabbit_admin_user')}"
+rjil::rabbitmq::rabbit_admin_pass: "%{hiera('rabbit_admin_pass')}"
+
+########### glance config
+###################################
+
+rjil::glance::ssl: true
+
+## rjil::glance::backend: Allowed values - rbd, file, swift, cinder
+## default one is rbd, which need ceph to be setup
+## if ceph is not setup, use file
+
+rjil::glance::backend: rbd
+
+### Start: rbd backend specific settings
+rjil::glance::ceph_mon_key: "%{hiera('rjil::ceph::mon::key')}"
+rjil::glance::rbd_user: glance
+rjil::glance::admin_email: "%{hiera('admin_email')}"
+rjil::glance::server_name: "%{hiera('glance_public_address')}"
+rjil::glance::api_localbind_port: "%{hiera('glance_api_localbind_port')}"
+rjil::glance::api_public_port: "%{hiera('glance_api_port')}"
+rjil::glance::registry_localbind_port: "%{hiera('glance_registry_localbind_port')}"
+rjil::glance::registry_public_port: "%{hiera('glance_registry_port')}"
+rjil::glance::rewrites:
+  - comment: "Return 200 for OPTIONS request"
+    rewrite_cond: '%%{}{REQUEST_METHOD} OPTIONS'
+    rewrite_rule: ".* / [R=200,L]"
+rjil::glance::headers:
+  - 'always set Access-Control-Allow-Origin "*"'
+  - 'always set Access-Control-Allow-Headers "Accept, Content-Type, X-Auth-Token, X-Subject-Token"'
+  - 'always set Access-Control-Expose-Headers "Accept, Content-Type, X-Auth-Token, X-Subject-Token"'
+  - 'always set Access-Control-Allow-Methods "GET POST OPTIONS PUT DELETE PATCH"'
+glance::backend::rbd::rbd_store_user: "%{hiera('rjil::glance::rbd_user')}"
+glance::backend::rbd::rbd_store_pool: images
+### End: rbd backend specific settings
+glance::api::bind_host: "%{hiera('localbind_host')}"
+glance::api::bind_port: "%{hiera('glance_api_localbind_port')}"
+glance::api::debug: "%{hiera('debug')}"
+glance::api::verbose: "%{hiera('verbose')}"
+glance::api::show_image_direct_url: true
+
+##
+# glance-registry can be either connected to localhost using http or
+# can be connected to lb using https
+##
+glance::api::registry_host: "localhost"
+glance::api::registry_port: "%{hiera('glance_registry_localbind_port')}"
+glance::api::registry_client_protocol: http
+
+glance::api::auth_host: "%{hiera('keystone_public_address')}"
+glance::api::auth_protocol: "%{hiera('rjil::keystone::protocol')}"
+glance::api::auth_uri: "%{hiera('rjil::keystone::protocol')}://%{hiera('glance::api::auth_host')}:%{hiera('keystone_port')}/%{hiera('rjil::keystone::version')}"
+glance::api::keystone_password: "%{hiera('glance::keystone::auth::password')}"
+glance::api::database_connection: "mysql://%{hiera('glance_db_user')}:%{hiera('glance_db_password')}@%{hiera('db_host')}/glance"
+glance::api::mysql_module: 2.3
+
+glance::registry::debug: "%{hiera('debug')}"
+glance::registry::verbose: "%{hiera('verbose')}"
+glance::registry::bind_host: "%{hiera('localbind_host')}"
+glance::registry::bind_port: "%{hiera('glance_registry_localbind_port')}"
+glance::registry::auth_host: "%{hiera('keystone_public_address')}"
+glance::registry::auth_protocol: "%{hiera('rjil::keystone::protocol')}"
+glance::registry::auth_uri: "%{hiera('rjil::keystone::protocol')}://%{hiera('glance::registry::auth_host')}:%{hiera('keystone_port')}/%{hiera('rjil::keystone::version')}"
+glance::registry::keystone_password: "%{hiera('glance::keystone::auth::password')}"
+glance::registry::database_connection: "%{hiera('glance::api::database_connection')}"
+glance::registry::mysql_module: 2.3
+
+########### Neutron Configuration
+###################################
+
+neutron::verbose: "%{hiera('verbose')}"
+neutron::debug: "%{hiera('debug')}"
+neutron::bind_host: "%{hiera('localbind_host')}"
+neutron::bind_port: "%{hiera('neutron_localbind_port')}"
+neutron::server::database_connection: "mysql://%{hiera('neutron_db_user')}:%{hiera('neutron_db_password')}@%{hiera('db_host')}/neutron"
+neutron::server::auth_password: "%{hiera('neutron::keystone::auth::password')}"
+neutron::server::auth_host: "%{hiera('keystone_public_address')}"
+neutron::server::auth_protocol: "%{hiera('rjil::keystone::protocol')}"
+neutron::server::mysql_module: 2.3
+neutron::rabbit_user: "%{hiera('rabbit_admin_user')}"
+neutron::rabbit_password: "%{hiera('rabbit_admin_pass')}"
+neutron::core_plugin: neutron_plugin_contrail.plugins.opencontrail.contrail_plugin.NeutronPluginContrailCoreV2
+neutron::service_plugins:
+  - neutron_plugin_contrail.plugins.opencontrail.loadbalancer.plugin.LoadBalancerPlugin
+neutron::quota::quota_driver: neutron_plugin_contrail.plugins.opencontrail.quota.driver.QuotaDriver
+neutron::plugins::ovs::tenant_network_type: vlan
+neutron::plugins::ovs::network_vlan_ranges: ctlplane
+
+# Below configs are not there in neutron module, so adding them in neutron
+# profile for now.
+rjil::neutron::api_extensions_path: extensions:/usr/lib/python2.7/dist-packages/neutron_plugin_contrail/extensions
+rjil::neutron::service_provider: LOADBALANCER:Opencontrail:neutron_plugin_contrail.plugins.opencontrail.loadbalancer.driver.OpencontrailLoadbalancerDriver:default
+rjil::neutron::contrail::keystone_admin_password: "%{hiera('admin_password')}"
+rjil::neutron::contrail::public_network_name: "%{hiera('public_network_name')}"
+
+rjil::neutron::contrail::fip_pool::keystone_admin_password: "%{hiera('admin_password')}"
+
+rjil::neutron::server_name: "%{hiera('neutron_public_address')}"
+rjil::neutron::ssl: true
+rjil::neutron::rewrites:
+  - comment: "Return 200 for OPTIONS request"
+    rewrite_cond: '%%{}{REQUEST_METHOD} OPTIONS'
+    rewrite_rule: ".* / [R=200,L]"
+rjil::neutron::headers:
+  - 'always set Access-Control-Allow-Origin "*"'
+  - 'always set Access-Control-Allow-Headers "Accept, Content-Type, X-Auth-Token, X-Subject-Token"'
+  - 'always set Access-Control-Expose-Headers "Accept, Content-Type, X-Auth-Token, X-Subject-Token"'
+  - 'always set Access-Control-Allow-Methods "GET POST OPTIONS PUT DELETE PATCH"'
+
+########### Neutron ovs configuration
+######################################
+##
+# OVS is used in undercloud neutron
+##
+uc_br_name: br-ctlplane
+uc_network_name: ctlplane
+rjil::neutron::ovs::br_physical_interface: "%{hiera('private_interface')}"
+rjil::neutron::ovs::br_name: "%{hiera('uc_br_name')}"
+
+
+neutron::agents::ml2::ovs::bridge_uplinks: ["%{hiera('uc_br_name')}:%{hiera('rjil::neutron::ovs::br_physical_interface')}"]
+neutron::agents::ml2::ovs::bridge_mappings: ["%{hiera('uc_network_name')}:%{hiera('uc_br_name')}"]
+
+neutron::plugins::ml2::type_drivers: ['flat']
+neutron::plugins::ml2::tenant_network_types: ['flat']
+neutron::plugins::ml2::mechanism_drivers: ['openvswitch']
+neutron::plugins::ml2::flat_networks: ["%{hiera('uc_network_name')}"]
+
+########### Cinder configuration
+###################################
+rjil::cinder::rpc_backend: "%{hiera('rpc_backend')}"
+rjil::cinder::ceph_mon_key: "%{hiera('rjil::ceph::mon::key')}"
+rjil::cinder::rbd_user: cinder_volume
+rjil::cinder::admin_email: "%{hiera('admin_email')}"
+rjil::cinder::server_name: "%{hiera('cinder_public_address')}"
+rjil::cinder::localbind_port: "%{hiera('cinder_localbind_port')}"
+rjil::cinder::public_port: "%{hiera('cinder_port')}"
+rjil::cinder::ssl: true
+rjil::cinder::rewrites:
+  - comment: "Return 200 for OPTIONS request"
+    rewrite_cond: '%%{}{REQUEST_METHOD} OPTIONS'
+    rewrite_rule: ".* / [R=200,L]"
+rjil::cinder::headers:
+  - 'always set Access-Control-Allow-Origin "*"'
+  - 'always set Access-Control-Allow-Headers "Accept, Content-Type, X-Auth-Token, X-Subject-Token"'
+  - 'always set Access-Control-Expose-Headers "Accept, Content-Type, X-Auth-Token, X-Subject-Token"'
+  - 'always set Access-Control-Allow-Methods "GET POST OPTIONS PUT DELETE PATCH"'
+
+cinder::api::bind_host: "%{hiera('localbind_host')}"
+cinder::rpc_backend: "%{hiera('rpc_backend')}"
+cinder::verbose: "%{hiera('verbose')}"
+cinder::debug: "%{hiera('debug')}"
+cinder::database_connection: "mysql://%{hiera('cinder_db_user')}:%{hiera('cinder_db_password')}@%{hiera('db_host')}/cinder"
+cinder::mysql_module: 2.3
+cinder::api::keystone_password: "%{hiera('cinder::keystone::auth::password')}"
+cinder::api::keystone_auth_host: "%{hiera('keystone_public_address')}"
+cinder::api::keystone_auth_protocol: "%{hiera('rjil::keystone::protocol')}"
+cinder::scheduler::scheduler_driver: cinder.scheduler.simple.SimpleScheduler
+cinder::volume::rbd::rbd_pool: volumes
+cinder::volume::rbd::rbd_user: cinder_volume
+cinder::volume::rbd::volume_tmp_dir: /tmp
+cinder::volume::rbd::rbd_secret_uuid: "%{hiera('cinder_rbd_secret_uuid')}"
+cinder::glance::glance_api_servers: "%{hiera('api_protocol')}://%{hiera('glance_public_address')}:%{hiera('glance_api_port')}"
+cinder::quota::quota_volumes: 120
+cinder::quota::quota_snapshots: 240
+
+########### Nova config
+###################################
+rjil::nova::controller::osapi_public_port: "%{hiera('nova_osapi_port')}"
+rjil::nova::controller::osapi_localbind_port: "%{hiera('nova_osapi_localbind_port')}"
+rjil::nova::controller::server_name: "%{hiera('nova_public_address')}"
+rjil::nova::controller::ssl: true
+rjil::nova::controller::rewrites:
+  - comment: "Return 200 for OPTIONS request"
+    rewrite_cond: '%%{}{REQUEST_METHOD} OPTIONS'
+    rewrite_rule: ".* / [R=200,L]"
+rjil::nova::controller::headers:
+  - 'always set Access-Control-Allow-Origin "*"'
+  - 'always set Access-Control-Allow-Headers "Accept, Content-Type, X-Auth-Token, X-Subject-Token"'
+  - 'always set Access-Control-Expose-Headers "Accept, Content-Type, X-Auth-Token, X-Subject-Token"'
+  - 'always set Access-Control-Allow-Methods "GET POST OPTIONS PUT DELETE PATCH"'
+nova::rpc_backend: "%{hiera('rpc_backend')}"
+nova::glance_api_servers: "%{hiera('api_protocol')}://%{hiera('glance_public_address')}:%{hiera('glance::keystone::auth::public_port')}"
+nova::database_connection: "mysql://%{hiera('nova_db_user')}:%{hiera('nova_db_password')}@%{hiera('db_host')}/nova"
+nova::mysql_module: 2.3
+nova::debug: "%{hiera('debug')}"
+nova::verbose: "%{hiera('verbose')}"
+
+nova::api::api_bind_address: "%{hiera('localbind_host')}"
+nova::api::auth_host: "%{hiera('keystone_public_address')}"
+nova::api::auth_protocol: "%{hiera('rjil::keystone::protocol')}"
+nova::api::auth_uri: "%{hiera('rjil::keystone::protocol')}://%{hiera('nova::api::auth_host')}:%{hiera('keystone_port')}/%{hiera('rjil::keystone::version')}"
+nova::api::admin_password: "%{hiera('nova::keystone::auth::password')}"
+nova::api::enabled: true
+nova::api::neutron_metadata_proxy_shared_secret: "%{hiera('nova_metadata_proxy_secret')}"
+
+nova::scheduler::enabled: true
+
+nova::network::neutron::neutron_admin_password: "%{hiera('neutron::keystone::auth::password')}"
+nova::network::neutron::neutron_url: "%{hiera('api_protocol')}://%{hiera('neutron_public_address')}:%{hiera('neutron_port')}"
+nova::network::neutron::neutron_region_name: "%{hiera('region')}"
+nova::network::neutron::neutron_admin_auth_url: "%{hiera('rjil::keystone::protocol')}://%{hiera('nova::api::auth_host')}:%{hiera('keystone_port')}/%{hiera('rjil::keystone::version')}"
+
+nova::conductor::enabled: true
+
+nova::cert::enabled: true
+
+nova::quota::quota_instances: 20
+nova::quota::quota_cores: -1
+nova::quota::quota_ram: -1
+nova::quota::quota_volumes: 120
+nova::quota::quota_floating_ips: 10
+
+
+#TODO Multiple consoleauth need memcache server to keep tokens.
+nova::consoleauth::enabled: true
+
+nova::vncproxy::enabled: true
+
+nova::compute::enabled: true
+nova::compute::vncserver_proxyclient_address: "%{hiera('private_address')}"
+nova::compute::vncproxy_host: "%{hiera('nova_public_address')}"
+nova::compute::virtio_nic: true
+nova::compute::neutron_enabled: true
+nova::compute::network_device_mtu: "%{hiera('mtu')}"
+nova::compute::libvirt::migration_support: true
+nova::compute::libvirt::vncserver_listen: 0.0.0.0
+nova::compute::libvirt::libvirt_images_type: raw
+
+nova::compute::neutron::libvirt_vif_driver: nova_contrail_vif.contrailvif.VRouterVIFDriver
+
+rjil::nova::compute::rbd::cinder_rbd_secret_uuid: "%{hiera('cinder_rbd_secret_uuid')}"
+rjil::nova::compute::rbd::ceph_mon_key: "%{hiera('rjil::ceph::mon::key')}"
+
+rjil::nova::controller::nova_auth:
+  username: nova
+  password: "%{hiera('nova::keystone::auth::password')}"
+  tenant_name: services
+  auth_url: "%{hiera('rjil::keystone::protocol')}://%{hiera('nova::api::auth_host')}:%{hiera('keystone_port')}/%{hiera('rjil::keystone::version')}"
+
+rjil::nova::controller::flavors:
+  small:
+    ram: 1024
+    disk: 20
+    vcpu: 1
+  medium:
+    ram: 4096
+    disk: 40
+    vcpu: 2
+  large:
+    ram: 8192
+    disk: 40
+    vcpu: 4
+  xlarge:
+    ram: 16384
+    disk: 40
+    vcpu: 4
+
+########### Ironic config
+###################################
+
+ironic_rabbit_user: "%{hiera('rabbit_admin_user')}"
+ironic_rabbit_password: "%{hiera('rabbit_admin_pass')}"
+ironic::verbose: "%{hiera('verbose')}"
+ironic::debug: "%{hiera('debug')}"
+ironic::rabbit_user: "%{hiera('ironic_rabbit_user')}"
+ironic::rabbit_password: "%{hiera('ironic_rabbit_password')}"
+ironic::rabbit_virtual_host: "%{hiera('ironic_rabbit_virtual_host')}"
+ironic::database_connection: "mysql://%{hiera('ironic_db_user')}:%{hiera('ironic_db_password')}@%{hiera('db_host')}/ironic"
+
+ironic::glance_api_servers: "%{hiera('api_protocol')}://%{hiera('glance_public_address')}:%{hiera('glance::keystone::auth::public_port')}"
+ironic::glance_api_insecure: true
+
+ironic::api::debug: "%{hiera('debug')}"
+ironic::api::verbose: "%{hiera('verbose')}"
+ironic::api::auth_host: "%{hiera('keystone_public_address')}"
+ironic::api::auth_protocol: "%{hiera('rjil::keystone::protocol')}"
+ironic::api::auth_uri: "%{hiera('rjil::keystone::protocol')}://%{hiera('ironic::api::auth_host')}:%{hiera('keystone_port')}/%{hiera('rjil::keystone::version')}"
+ironic::api::admin_password: "%{hiera('ironic::keystone::auth::password')}"
+ironic::api::admin_tenant_name: services
+ironic::api::mysql_module: 2.3
+
+nova::compute::ironic::keystone_password: "%{hiera('ironic::api::admin_password')}"
+nova::compute::ironic::keystone_url: "%{hiera('ironic::api::auth_uri')}"
+
+rjil::ironic::deploy_ironic_api_url: "http://%{::ipaddress}:6385/"
+rjil::ironic::neutron_url: "%{hiera('api_protocol')}://%{hiera('neutron_public_address')}:%{hiera('neutron_port')}"
+
+########### Keystone config
+###################################
+rjil::keystone::ssl: true
+rjil::keystone::protocol: "%{hiera('api_protocol')}"
+rjil::keystone::version: v2.0
+rjil::keystone::admin_email: "%{hiera('admin_email')}"
+rjil::keystone::public_port: "%{hiera('keystone_port')}"
+rjil::keystone::public_port_internal: "%{hiera('keystone_localbind_port')}"
+rjil::keystone::admin_port: "%{hiera('keystone_admin_port')}"
+rjil::keystone::admin_port_internal: "%{hiera('keystone_admin_localbind_port')}"
+rjil::keystone::public_address: "%{hiera('public_address')}"
+rjil::keystone::server_name: "%{hiera('keystone_public_address')}"
+rjil::keystone::rewrites:
+  - comment: "Return 200 for OPTIONS request"
+    rewrite_cond: '%%{}{REQUEST_METHOD} OPTIONS'
+    rewrite_rule: ".* / [R=200,L]"
+rjil::keystone::headers:
+  - 'always set Access-Control-Allow-Origin "*"'
+  - 'always set Access-Control-Allow-Headers "Accept, Content-Type, X-Auth-Token, X-Subject-Token"'
+  - 'always set Access-Control-Expose-Headers "Accept, Content-Type, X-Auth-Token, X-Subject-Token"'
+  - 'always set Access-Control-Allow-Methods "GET POST OPTIONS PUT DELETE PATCH"'
+keystone::roles::admin::email: "%{hiera('admin_email')}"
+keystone::roles::admin::password: "%{hiera('admin_password')}"
+keystone::admin_password: "%{hiera('admin_password')}"
+keystone::database_connection: "mysql://keystone:%{hiera('keystone_db_password')}@%{hiera('db_host')}/keystone"
+keystone::debug: "%{hiera('debug')}"
+keystone::verbose: "%{hiera('verbose')}"
+keystone::admin_port: "%{hiera('keystone_admin_localbind_port')}"
+keystone::public_port: "%{hiera('keystone_localbind_port')}"
+keystone::token_provider: keystone.token.providers.uuid.Provider
+keystone::mysql_module: 2.3
+keystone::public_bind_host: "%{hiera('localbind_host')}"
+keystone::admin_bind_host: "%{hiera('localbind_host')}"
+
+##
+# without endpoint configuration, keystone will return local bind address to
+# client requests which will break the system.
+##
+keystone::admin_endpoint: "%{hiera('api_protocol')}://%{hiera('keystone_private_address')}:%{hiera('keystone_admin_port')}"
+keystone::public_endpoint: "%{hiera('api_protocol')}://%{hiera('keystone_public_address')}:%{hiera('keystone_port')}"
+
+# these changes are just from our fork and need to be moved to the profile
+rjil::keystone::cache_enabled: true
+rjil::keystone::cache_backend: dogpile.cache.memcached
+rjil::keystone::cache_backend_argument: url:127.0.0.1:11211
+
+rjil::openstack_objects::identity_address: "%{hiera('keystone_public_address')}"
+
+cinder::keystone::auth::password: cinder
+cinder::keystone::auth::admin_address: "%{hiera('cinder_internal_address')}"
+cinder::keystone::auth::internal_address: "%{hiera('cinder_internal_address')}"
+cinder::keystone::auth::public_protocol: "%{hiera('api_protocol')}"
+cinder::keystone::auth::internal_protocol: "%{hiera('api_protocol')}"
+cinder::keystone::auth::admin_protocol: "%{hiera('api_protocol')}"
+cinder::keystone::auth::public_address: "%{hiera('cinder_public_address')}"
+cinder::keystone::auth::public_port: 8776
+cinder::keystone::auth::region: "%{hiera('region')}"
+
+glance::keystone::auth::password: glance
+glance::keystone::auth::public_address: "%{hiera('glance_public_address')}"
+glance::keystone::auth::public_port: "%{hiera('glance_api_port')}"
+glance::keystone::auth::public_protocol: "%{hiera('api_protocol')}"
+glance::keystone::auth::admin_protocol: "%{hiera('api_protocol')}"
+glance::keystone::auth::internal_protocol: "%{hiera('api_protocol')}"
+glance::keystone::auth::admin_address: "%{hiera('glance_internal_address')}"
+glance::keystone::auth::internal_address: "%{hiera('glance_internal_address')}"
+glance::keystone::auth::region: "%{hiera('region')}"
+
+keystone::endpoint::password: keystone
+keystone::endpoint::public_url: "%{hiera('rjil::keystone::protocol')}://%{hiera('keystone_public_address')}:%{hiera('keystone_port')}"
+keystone::endpoint::admin_url: "%{hiera('rjil::keystone::protocol')}://%{hiera('keystone_private_address')}:%{hiera('keystone_admin_port')}"
+keystone::keystone::auth::region: "%{hiera('region')}"
+
+neutron::keystone::auth::password: neutron
+neutron::keystone::auth::public_address: "%{hiera('neutron_public_address')}"
+neutron::keystone::auth::public_port: "%{hiera('neutron_port')}"
+neutron::keystone::auth::public_protocol: "%{hiera('api_protocol')}"
+neutron::keystone::auth::internal_protocol: "%{hiera('api_protocol')}"
+neutron::keystone::auth::admin_protocol: "%{hiera('api_protocol')}"
+neutron::keystone::auth::admin_address: "%{hiera('neutron_internal_address')}"
+neutron::keystone::auth::internal_address: "%{hiera('neutron_internal_address')}"
+neutron::keystone::auth::region: "%{hiera('region')}"
+
+nova::keystone::auth::password: nova
+nova::keystone::auth::public_address: "%{hiera('nova_public_address')}"
+nova::keystone::auth::public_port: "%{hiera('nova_osapi_port')}"
+nova::keystone::auth::public_protocol: "%{hiera('api_protocol')}"
+nova::keystone::auth::internal_protocol: "%{hiera('api_protocol')}"
+nova::keystone::auth::admin_protocol: "%{hiera('api_protocol')}"
+nova::keystone::auth::admin_address: "%{hiera('nova_internal_address')}"
+nova::keystone::auth::internal_address: "%{hiera('nova_internal_address')}"
+nova::keystone::auth::region: "%{hiera('region')}"
+
+rjil::keystone::ceph_radosgw_enabled: true
+rjil::keystone::radosgw::admin_address: "%{hiera('radosgw_internal_address')}"
+rjil::keystone::radosgw::internal_address: "%{hiera('radosgw_internal_address')}"
+rjil::keystone::radosgw::public_protocol: "%{hiera('radosgw_protocol')}"
+rjil::keystone::radosgw::public_address: "%{hiera('radosgw_public_address')}"
+rjil::keystone::radosgw::port: "%{hiera('radosgw_port')}"
+rjil::keystone::radosgw:region: "%{hiera('region')}"
+
+ironic::keystone::auth::password: ironic
+ironic::keystone::auth::admin_address: "%{hiera('ironic_internal_address')}"
+ironic::keystone::auth::internal_address: "%{hiera('ironic_internal_address')}"
+ironic::keystone::auth::public_protocol: http
+ironic::keystone::auth::public_address: "%{hiera('ironic_public_address')}"
+ironic::keystone::auth::public_port: 6385
+ironic::keystone::auth::region: "%{hiera('region')}"
+
+
+#########################################
+###### System configuration #############
+#########################################
+
+rjil::system::dhclient_override_domain_name: node.consul
+
+########### Account settings
+############################
+
+rjil::system::accounts::active_users: [soren,bodepd,hkumar,jenkins, consul]
+rjil::system::accounts::sudo_users:
+  admin:
+    users: [soren,bodepd,hkumar,jenkins, consul]
+
+########### Apt settings
+############################
+
+apt::purge_sources_list: true
+apt::purge_sources_list_d: true
+
+## Complete set of sources are added in class rjil::system::apt
+## Only repos which are added to active_sources are enabled
+
+rustedhalo_apt_repo_release: 'trusty'
+
+rjil::system::apt::enable_puppetlabs: true
+rjil::system::apt::repositories:
+  rustedhalo:
+    location: 'http://jiocloud.rustedhalo.com/ubuntu/'
+    release: "%{hiera('rustedhalo_apt_repo_release')}"
+    repos: 'main'
+    include_src: false
+    key: '85596F7A'
+    key_content: |
+      -----BEGIN PGP PUBLIC KEY BLOCK-----
+      Version: GnuPG v1
+
+      mQENBFM0FdsBCADbcuhgf4ny6HQXSCrskXK3hp8HUA4UbW9xIO/fqUzKTvxRuwUR
+      yRZHXVdCCaLOD8En+h4fnAs2PY3ueVfcIDt9DsJcmqWE+cbFG191Yw8hQV/MtxXU
+      YNAS6oKOwMheC3BtxdbplJ4hbg065m38wPmcgt/rJiAQZBxrKggCHTvIQunvJnmG
+      /7OMuwhkzewEAaG5E1mmdVq+IMJAg0ltMiRANASo07wrB0At4q62ozBomua6Hk3s
+      69ie5ZGiQtyIOgB1mO4RwxS0MoMd+ffq6Kyc8GPoM9EFj4zYGIyOZBa4YqI9cs9A
+      88E5910lHNx8p2wZCsN+Z00IDN3c6nGmHrzNABEBAAG0Kkppb0Nsb3VkIFJlcG9z
+      aXRvcnkgPHN1cHBvcnRAamlvY2xvdWQuY29tPokBOAQTAQIAIgUCUzQV2wIbAwYL
+      CQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQhgQCvoVZb3oKVwf+Pr3hBs1h5oOk
+      VFHwQ/whCcnLjdY1so9wVeZ0TsZVRTrepyKB4Bi+yy4xtYZ572JLbORqRIfdOTgE
+      06cagaoi2Mc1e5sW/l0ifOvfjlrxIECMX4ftL2igZ7Cu4GB8+WmuDdHpsTdi1Fvx
+      9cn2eHAylHS3oblwoKpdfiHLPkP0Dt5aJFKOyBQfDPhjX4LF0S0aC0Zg43jNIZdf
+      nnC71P2+i5WwvljJV2+DTtp3/ImBMKVKgAISxOtBsA5PC+yP6X4lsUUwEP4amti8
+      jnq2HAjKkpM3UTAWLbHN3x6O2Mg+OIvjYUhrbYeHqQEQurUoPUx2FjZhrXDM/Cxg
+      tnaES5wRqLkBDQRTNBXbAQgAs4OQ1KlirGpiZC4hEvfmrkBKiJUk1sxsRzqqatkv
+      Ul5ay3DWoknYO+C7RIzYTwMQ9lv/QwJA2T+FpYykiu6gg872W5aje9xqg98z9DTM
+      C2lZ79yUMNiMNdKr6Zd05Q6zz0EQVaTMwrYEb+DOW0H8ka7HJA2MJc/ot0Bf2G2A
+      uavopMiikaVX67901qvHKqQMFgFzbe0C16poK057W3iFEnYAYTzJ6sLhCukfMkwk
+      6cIApeCEDz9d1tq5aiYcgXhnhnLnXBR9nUlI5qdfU/6+Nmcgh+izjtQp+U5cKHhl
+      YaiPfbVLQVUg/jbhem0XZuXJ9LdaNoeDdG+7KP7s+N+fIwARAQABiQEfBBgBAgAJ
+      BQJTNBXbAhsMAAoJEIYEAr6FWW96QewH/20zMCYcDgt8AoRJsyhLPLw8Xa8N57YD
+      EJfNUKA/74UrUSiLNktXzOVRLa1vAp5kdd9x6HNg5C0bt8kjvYzTvVChRBGt7NRg
+      SViL4sowyCFpT23JhHRajMmiJPigG+c4gjIJF4DbnpSG8WPC3jDPV891EZCodmaz
+      klc+BnhnZrb4FcB04RdQ/WXgVshDCzVQhmdIEILGKYHMTjlK/HkV6YqH7l7+jRvJ
+      phmH35+GJQumLfXWlvDchtBjUTo5ZDCa7TWhwhXZoFg5nxadQDX4TwHhZBQH1TX5
+      Chk4NnD90SYZt36sTLITe5O/BgYlRMqVo+bVj0tmjMJP/B4PZjABX7A=
+      =iZW7
+      -----END PGP PUBLIC KEY BLOCK-----
+  local:
+    location: 'http://10.140.221.229/apt/bafna/bafna'
+    architecture: 'amd64'
+    pin: '800'
+    release: 'jiocloud'
+    repos: 'main'
+    include_src: false
+    key: '10FFA9BC'
+    key_content: |
+      -----BEGIN PGP PUBLIC KEY BLOCK-----
+      Version: GnuPG v1
+      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
+      vfW6si1IyK7LtuCI3uU2
+      =mdmh
+      -----END PGP PUBLIC KEY BLOCK-----
+  ceph:
+    location: 'http://apt.overcastcloud.com/bafnag/bafnag'
+    architecture: 'amd64'
+    pin: '600'
+    release: 'overcast'
+    repos: 'main'
+    include_src: false
+    key: '3EC5F98AE2B38E1C'
+    key_content: |
+      -----BEGIN PGP PUBLIC KEY BLOCK-----
+      Version: GnuPG v1
+      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
+      3BOR4f8sylXC8j7oG2TIeQ==
+      =+F6h 
+      -----END PGP PUBLIC KEY BLOCK-----
+  ubuntu:
+    location: 'http://in.archive.ubuntu.com/ubuntu'
+    release: 'trusty'
+    repos: 'main restricted universe multiverse'
+    include_src: false
+  ubuntu_updates:
+    location: 'http://in.archive.ubuntu.com/ubuntu'
+    release: 'trusty-updates'
+    repos: 'main restricted universe multiverse'
+    include_src: false
+  ubuntu_security:
+    location: 'http://in.archive.ubuntu.com/ubuntu'
+    release: 'trusty-security'
+    repos: 'main restricted universe multiverse'
+    include_src: false
+
+
+
+########################################
+########## Contrail Settings ###########
+########################################
+
+rabbitmq::manage_repos: false
+rabbitmq::admin_enable: false
+rabbitmq::port: '5672'
+rabbitmq::delete_guest_user: true
+
+contrail::keystone_address: "%{hiera('keystone_public_address')}"
+contrail::keystone_admin_token: "%{hiera('keystone::admin_token')}"
+contrail::keystone_admin_password: "%{hiera('admin_password')}"
+contrail::keystone_auth_password: "%{hiera('neutron::keystone::auth::password')}"
+contrail::keystone_protocol: "%{hiera('api_protocol')}"
+contrail::nova_metadata_address: "lb.nova.service.consul"
+contrail::rabbit_user: "%{hiera('rabbit_admin_user')}"
+contrail::rabbit_password: "%{hiera('rabbit_admin_pass')}"
+contrail::vrouter::metadata_proxy_secret: "%{hiera('nova_metadata_proxy_secret')}"
+contrail::vrouter::keystone_admin_password: "%{hiera('admin_password')}"
+contrail::interface: "%{hiera('private_interface')}"
+contrail::manage_repo: false
+contrail::vrouter::manage_repo: false
+
+contrail::neutron_ip: "%{hiera('neutron_public_address')}"
+contrail::enable_analytics: false
+
+contrail::enable_dns: false
+contrail::dns_port: 10000
+
+contrail::vrouter::debug: true
+
+rjil::contrail::server::enable_analytics: false
+rjil::contrail::server::enable_dns: "%{hiera('contrail::enable_dns')}"
+rjil::contrail::server::dns_port: "%{hiera('contrail::dns_port')}"
+
+contrail::config::quota_floating_ip: 5
+contrail::config::quota_logical_router: 10
+contrail::config::quota_security_group: 100
+contrail::config::quota_security_group_rule: 50
+contrail::config::quota_subnet: 20
+contrail::config::quota_virtual_machine_interface: 100
+contrail::config::quota_virtual_network: 5
+
+###########################################
+############ Ceph Configuration ###########
+###########################################
+
+########## Ceph common configuration
+####################################
+
+### These should go to environment specific yaml
+
+## fsid: unique uuid
+rjil::ceph::fsid: fac04d85-db48-4564-b821-deebda046261
+ceph::conf::fsid: "%{hiera('rjil::ceph::fsid')}"
+
+##Global Ceph conf
+ceph::conf::pool_default_pg_num: 512
+rjil::ceph::pool_default_size: 3
+ceph::conf::pool_default_size:  "%{hiera('rjil::ceph::pool_default_size)}"
+ceph::conf::pool_default_min_size: 2
+ceph::conf::journal_size_mb: 4096
+ceph::conf::filestore_min_sync_interval: 1
+ceph::conf::filestore_max_sync_interval: 15
+ceph::conf::filestore_op_threads: 64
+ceph::conf::rgw_thread_pool_size: 128
+ceph::conf::debug_rgw: 5
+ceph::conf::osd_disk_threads: 4
+ceph::conf::osd_op_threads: 10
+
+rjil::ceph::storage_cluster_if: "%{hiera('private_interface')}"
+rjil::ceph::public_if: "%{hiera('public_interface')}"
+
+## rjil::ceph::mon_config: - A hash defines all mon nodes
+## Currently this is moved to environment specific hiera file.
+## Ideally these IP addresses will be consumed from service discovery, but in
+## service discovery in current form doesnt support this scenario.
+
+## rjil::ceph::mon_initial_members: This is a comma separated value which
+##      defines initial mon members, if not define, this is derived from mon_config
+#rjil::ceph::mon_initial_members: 'st2,st3'
+
+########## Ceph Mon configuration
+####################################
+rjil::ceph::mon::public_if: "%{hiera('public_interface')}"
+
+
+########## Ceph OSD configuration
+####################################
+rjil::ceph::osd::public_if: "%{hiera('public_interface')}"
+rjil::ceph::osd::storage_cluster_if: "%{hiera('private_interface')}"
+rjil::ceph::osd::mon_key: "%{hiera('rjil::ceph::mon::key')}"
+
+### This may be override in clientcert
+
+##
+## if autodetect is yes, puppet will detect all blank disks
+##    using $::blankorcephdisks custom facter
+## Actual disks to be used for ceph osd is the difference
+## between detected disks and rjil::ceph::osd::disk_exceptions array
+##
+
+# rjil::ceph::osd::autodetect: true
+
+##
+##  disk_exceptions to be configured for any exceptions on disk autodetect
+##
+## Note: All devices should be mentioned with device names only
+## e.g. for /dev/sdb, just specify sdb.
+##
+# rjil::ceph::osd::disk_exceptions:
+#  - sdb
+
+##
+## In case autodetect is false, rjil::ceph::osd::osds
+## should be configured with an array of disks as below example
+##
+# rjil::ceph::osd::osds:
+#  - sdb
+#  - sdc
+
+##
+## if rjil::ceph::osd::autogenerate is true, the code will generate a loopback
+## disk, and use it for osd.
+## rjil::ceph::osd::autodisk_size: The size of loopback disk in GB (Default 10GB) which is minimum
+## Note: The above settings are only required for testing. In production or
+## staging, real disks will be used.
+
+#rjil::ceph::osd::autogenerate: true
+
+########### Ceph radosgw settings
+#################################
+ceph::radosgw::keystone_url: "%{hiera('keystone::endpoint::admin_url')}"
+ceph::radosgw::keystone_admin_token: "%{hiera('keystone::admin_token')}"
+ceph::radosgw::mon_key: "%{hiera('rjil::ceph::mon::key')}"
+ceph::radosgw::gw_serveradmin_email: "%{hiera('admin_email')}"
+ceph::radosgw::gw_server_name: "%{hiera('radosgw_public_address')}"
+ceph::radosgw::radosgw_cert_file: /etc/ssl/certs/jiocloud.com.crt
+ceph::radosgw::radosgw_key_file: /etc/ssl/keys/jiocloud.com.key
+ceph::radosgw::radosgw_ca_file: /etc/ssl/certs/gd_bundle-g2-g1.crt
+
+ceph::radosgw::listen_ssl: true
+
+rjil::ceph::radosgw::ssl: true
+
+ceph::radosgw::apache::rewrites:
+  - comment: "Return 200 for OPTIONS request"
+    rewrite_cond: '%%{}{REQUEST_METHOD} OPTIONS'
+    rewrite_rule: ".* / [R=200,L]"
+# below headers are required to enable CORS.
+ceph::radosgw::apache::headers:
+  - 'always set Access-Control-Allow-Origin "*"'
+  - 'always set Access-Control-Allow-Headers "Accept, Content-Type, X-Auth-Token, X-Subject-Token"'
+  - 'always set Access-Control-Expose-Headers "Accept, Content-Type, X-Auth-Token, X-Subject-Token"'
+  - 'always set Access-Control-Allow-Methods "GET POST OPTIONS PUT DELETE PATCH"'
+radosgw_protocol: "%{hiera('api_protocol')}"
+radosgw_port: 80
+
+########### consul settings
+###############################
+
+rjil::jiocloud::consul::server::bind_addr: "%{hiera('private_address')}"
+rjil::jiocloud::consul::bootstrapserver::bind_addr: "%{hiera('private_address')}"
+rjil::jiocloud::consul::agent::bind_addr: "%{hiera('private_address')}"
+
+########### ntp  settings
+###############################
+# configure all systems to set their ntp service to
+# the service name set by consul. The etcd node will
+# provide this service and will be configured as a role
+# specific override
+
+ntp::servers:
+  - ntp.service.consul
+
+upstream_ntp_servers:
+  - pool.ntp.org
+
+ssh::server::storeconfigs_enabled: false
+
+gitolite::admin_pub_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDT7UcaDrA8FVbepVxD+HuhXDDzEyy2pKGZcv2PstGVEW0ltspt7glmxNRHHBUuPsgvMQjVnLHvmxUE79DotCsMFg2o2lQM8uRlIAiX3tSeN5pgxbt1MhpmAV7AyCkDLsUeTWhfVeUgTO2amM5aKuJzGqxbNgf1tNKEdyspCm/c06L2rMQZ2MWhqHLPC4C4O3mGbuTeWthIU4PgWK8hGcqxm4QwACwpMT7iTfH8mALCmeCw0PQdE6Mz5rpFftvwOPpNwU0W/dfqjZ/zTa+n5wIzTL7d6qD3E2ihSIsP8YCObiICWBJFzidtbLxMNu5nZqPK7wPL7VzQS89FNQNSD4if soren@bulky'
+
+########### Undercloud
+#############################
+#
+baremetal::ilo_user: hpadmin
+baremetal::ilo_password: hpinvent
+
+######## ilo dhcp server settings
+#################################
+dhcp::default_lease_time: 2592000
+dhcp::max_lease_time: 2592000
+##
+# dhcp pools to be configured
+##
+
+##
+# There must be dhcppools entries for subnets which are configured on
+# rjil::jiocloud::dhcp::interfaces, otherwise dhcp server will fail to start.
+##
+
+#rjil::jiocloud::dhcp::dhcppools:
+#  net1:
+#    network: 10.10.10.0
+#    mask: 255.255.255.0
+#    range:
+#      - 10.10.10.10
+#      - 10.10.10.254
+#    gateway: 10.10.10.1
+#    oncommit_script: /tmp/script.sh
+#    oncommit:
+#      - 'set cip = binary-to-ascii(10, 8, ".", leased-address)'
+#      - 'set cmac = binary-to-ascii(16, 8, ":", substring(hardware, 1, 6))'
+#      - 'execute("/tmp/script.sh","commit", cip, cmac)'
+
+rjil::jiocloud::dhcp::apparmor_rules:
+    '/etc/apparmor.d/local/usr.sbin.dhcpd':
+      content: |
+        /usr/bin/python2.7 ix,
+        /usr/local/lib/python2.7/dist-packages/ r,
+        /etc/python2.7/sitecustomize.py r,
+        /usr/share/pyshared/jiocloud/__init__.py r,
+        /usr/share/pyshared/jiocloud/enroll.py r,
+        /bin/dash ix,
+rjil::jiocloud::dhcp::dhcppools:
+  ilo_net:
+    network: "%{hiera('ilo::network')}"
+    mask: "%{hiera('ilo::netmask')}"
+    gateway: "%{hiera('ilo::gateway')}"
+    range: ["%{hiera('ilo::dhcp_range')}"]
+    files:
+      '/var/log/dhcp':
+        ensure: directory
+      '/var/log/dhcp/enroll_nodes.log':
+        ensure: file
+        mode: '0644'
+      '/usr/lib/jiocloud/enroll_nodes.sh':
+        content: "#!/bin/bash\n/usr/bin/python2.7 -m jiocloud.enroll --ilo_username %{hiera('baremetal::ilo_user')} --ilo_password %{hiera('baremetal::ilo_password')} --os_username admin --os_tenant openstack --os_password %{hiera('admin_password')} --os_auth_url %{hiera('keystone::endpoint::public_url')}/%{hiera('rjil::keystone::version')} --nic %{hiera('baremetal::active_nic_number')} --ilo_address $1 2>&1 >> /var/log/dhcp/enroll_nodes.log"
+        mode: '0700'
+
+    oncommit:
+      - set cip = binary-to-ascii(10, 8, ".", leased-address)
+      - execute("/usr/lib/jiocloud/enroll_nodes.sh", cip)
+
+
+########## Common apache settings
+#################################
+rjil::apache::ssl: true
+apache::default_vhost: false
+apache::server_signature: 'Off'
+apache::apache_version: '2.4'
+apache::default_ssl_chain: '/etc/ssl/certs/gd_bundle-g2-g1.crt'
+apache::default_ssl_cert: '/etc/ssl/certs/jiocloud.com.crt'
+apache::default_ssl_key: '/etc/ssl/keys/jiocloud.com.key'
+
+
+######### Tempest settings
+################################
+tempest::tempest_repo_uri: 'https://github.com/JioCloud/tempest.git'
+tempest::image_name: cirros-0.3.3
+tempest::image_name_alt: cirros-0.3.3
+tempest::flavor_name: small
+tempest::admin_password: tempest_admin
+tempest::admin_username: tempest_admin
+tempest::tenant_name: tempest
+tempest::username: tempest
+tempest::password: tempest
+tempest::identity_uri: "%{hiera('keystone::endpoint::public_url')}/%{hiera('rjil::keystone::version')}"
+tempest::identity_uri_v3: "%{hiera('keystone::endpoint::public_url')}/v3"
+tempest::neutron_available: true
+tempest::public_network_name: "%{hiera('public_network_name')}"
+tempest::fixed_network_name: net_tempest
+tempest::setup_venv: false
+tempest::swift_available: true
+tempest::tempest_clone_path: /home/jenkins/tempest
+tempest::tempest_clone_owner: jenkins
+tempest::volume_storage_protocol: ceph
+tempest::extra_config:
+  auth/allow_tenant_isolation:
+    value: false
+  compute/run_ssh:
+    value: false
+  compute/ssh_auth_method:
+    value: keypair
+  compute/ssh_connect_method:
+    value: floating
+  compute/ssh_user:
+    value: cirros
+  compute/network_for_ssh:
+    value: public
+  compute/env_type:
+    value: gate
+  compute/mtu_size:
+    value: 1400
+  compute/use_floatingip_for_ssh:
+    value: true
+  compute-feature-enabled/disk_config:
+    value: true
+  compute-feature-enabled/api_extensions:
+    value: all
+  compute-feature-enabled/change_password:
+    value: false
+  compute-feature-enabled/console_output:
+    value: true
+  compute-feature-enabled/resize:
+    value: false
+  compute-feature-enabled/pause:
+    value: true
+  compute-feature-enabled/shelve:
+    value: false
+  compute-feature-enabled/suspend:
+    value: true
+  compute-feature-enabled/live_migration:
+    value: false
+  compute-feature-enabled/block_migration_for_live_migration:
+    value: false
+  compute-feature-enabled/block_migrate_cinder_iscsi:
+    value: false
+  compute-feature-enabled/vnc_console:
+    value: false
+  compute-feature-enabled/spice_console:
+    value: false
+  compute-feature-enabled/rdp_console:
+    value: false
+  compute-feature-enabled/rescue:
+    value: false
+  compute-feature-enabled/enable_instance_password:
+    value: true
+  compute-feature-enabled/interface_attach:
+    value: true
+  compute-feature-enabled/snapshot:
+    value: true
+  compute-feature-enabled/ec2_api:
+    value: true
+  compute-feature-enabled/boot_from_volume_only:
+    value: true
+  oslo_concurrency/disable_process_locking:
+    value: true
+  validation/run_validation:
+    value: true
+  validation/connect_method:
+    value: floating
+  validation/auth_method:
+    value: keypair
+  volume/volume_size:
+    value: 4
+
+rjil::tempest::keystone_admin_token: "%{hiera('keystone::admin_token')}"
+rjil::tempest::auth_host: "%{hiera('keystone_public_address')}"
+rjil::tempest::auth_protocol: "%{hiera('api_protocol')}"
+rjil::tempest::tempest_test_file: /home/jenkins/tempest_tests.txt
+rjil::tempest::tempest_clone_path: "%{hiera('tempest::tempest_clone_path')}"
+rjil::tempest::neutron_admin_password: "%{hiera('neutron::keystone::auth::password')}"
+rjil::tempest::glance_admin_password: "%{hiera('glance::keystone::auth::password')}"
+rjil::tempest::nova_admin_password: "%{hiera('nova::keystone::auth::password')}"
+
+rjil::tempest::provision::auth_host: "%{hiera('keystone_public_address')}"
+rjil::tempest::provision::auth_port: "%{hiera('keystone_port')}"
+rjil::tempest::provision::auth_protocol: "%{hiera('api_protocol')}"
+rjil::tempest::provision::neutron_admin_password: "%{hiera('neutron::keystone::auth::password')}"
+
+tempest::provision::imagename: "%{hiera('tempest::image_name')}"
+tempest::provision::tenantname: "%{hiera('tempest::tenant_name')}"
+tempest::provision::username: "%{hiera('tempest::username')}"
+tempest::provision::password: "%{hiera('tempest::password')}"
+tempest::provision::admin_username: "%{hiera('tempest::admin_username')}"
+tempest::provision::admin_password: "%{hiera('tempest::admin_password')}"
+tempest::provision::networkname: "%{hiera('tempest::fixed_network_name')}"
+
+apache::trace_enable: 'Off'
+apache::mod::ssl::ssl_cipher: "HIGH:MEDIUM:!aNULL:!MD5:!RC4"
+
+## consul-alerts settings
+#################################
+rjil::jiocloud::consul::consul_alerts::check_thresold: "30"
+rjil::jiocloud::consul::consul_alerts::slack_cluster_name: "consul-alerts"
+#rjil::jiocloud::consul::consul_alerts::slack_url: "https://hooks.slack.com/services/T0300/B046C4M6Z/bH4CQ8IZU8uu13uWeMgZ8Mww"
+rjil::jiocloud::consul::consul_alerts::slack_username: "WatchBot"
+rjil::jiocloud::consul::consul_alerts::slack_channel: "consul-alerts"
+
+#### Squid configurations
+squid3::cache_dir: ['ufs /var/spool/squid3 40000 16 256']
+squid3::maximum_object_size: '512 MB'
+squid3::maximum_object_size_in_memory: '40000 KB'
+squid3::cache_mem: '1512 MB'
+squid3::refresh_patterns:
+  - 'deb$   129600 100% 129600'
+  - 'udeb$   129600 100% 129600'
+  - 'tar.gz$  129600 100% 129600'
+  - 'changelogs.ubuntu.com/*  0  1% 1'
+
+####workaround for neutron bad status line###
+####increasing the haproxy timeout from 20s ####
+rjil::haproxy::default_timeout_connect: 50000
+rjil::haproxy::default_timeout_client: 50000
+rjil::haproxy::default_timeout_server: 50000

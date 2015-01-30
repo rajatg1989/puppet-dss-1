@@ -1,0 +1,8 @@
+modules usr/share/puppet
+manifests usr/share/puppet/modules/rjil
+templates usr/share/puppet/modules/rjil
+lib usr/share/puppet/modules/rjil
+files usr/share/puppet/modules/rjil
+hiera usr/share
+hiera/hiera.yaml etc/puppet
+site.pp etc/puppet/manifests

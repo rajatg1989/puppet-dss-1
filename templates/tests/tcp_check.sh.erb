@@ -1,0 +1,3 @@
+#!/bin/bash
+set -e
+/usr/lib/nagios/plugins/check_tcp -H <%= @address %> -p <%= @port %>
