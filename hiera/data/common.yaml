@@ -593,7 +593,7 @@ rustedhalo_apt_repo_release: 'trusty'
 rjil::system::apt::enable_puppetlabs: true
 rjil::system::apt::repositories:
   rustedhalo:
-    location: 'http://jiocloud.rustedhalo.com/ubuntu/'
+    location: 'http://10.140.221.229/mirrors/mirrors/42/jiocloud.rustedhalo.com/ubuntu/'
     release: "%{hiera('rustedhalo_apt_repo_release')}"
     repos: 'main'
     include_src: false
