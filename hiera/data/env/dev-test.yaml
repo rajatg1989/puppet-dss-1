@@ -19,7 +19,6 @@ rjil::system::proxies:
     url: "http://10.140.192.24:10000/"
 
 rjil::ceph::osd::osds:
-    - sda
     - sdb
     - sdc
     - sdd
@@ -44,6 +43,7 @@ rjil::ceph::osd::osds:
     - sdw
     - sdx
     - sdy 
+    - sdz
 
 rjil::system::accounts::active_users: [rahul,harshalgupta,bafna,abhidixit,shivanshu21]
 rjil::system::accounts::sudo_users:
