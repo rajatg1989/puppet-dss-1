@@ -1,11 +1,12 @@
 rjil::jiocloud::consul::service::interval: "10s"
 
-public_address: "%{ipaddress_10_140_214_0_23}"
-public_interface: "%{interface_10_140_214_0_23}"
-private_address: "%{ipaddress_10_140_214_0_23}"
-private_interface: "%{interface_10_140_214_0_23}"
+public_address: "%{ipaddress}"
+public_interface: "%{interface_staging}"
+private_address: "%{ipaddress}"
+private_interface: "%{interface_staging}"
 
-keystone_public_address: "dss-dev-test.jiocloud.com"
+keystone_private_address: "iam.ind-west-1.staging.jiocloudservices.com"
+keystone_private_address: "iam.ind-west-1.staging.jiocloudservices.com"
 keystone_private_address: "dss-dev-test.jiocloud.com"
 radosgw_public_address: "dss-dev-test.jiocloud.com"
 radosgw_internal_address: "dss-dev-test.jiocloud.com"

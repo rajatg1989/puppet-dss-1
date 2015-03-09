@@ -16,14 +16,7 @@ Facter.value('interfaces').split(',').reject{ |r| r == 'lo' }.each do |iface|
     # - rather than typing ipaddress_192_168_0_0_255_255_255_0 just type
     # 192_168_0_0_24 (<network>_<cidr>)
     ##
-    cidr = IPAddr.new(Facter.value('netmask_' + iface)).to_i.to_s(2).count("1").to_s
-    network = Facter.value('network_' + iface).gsub('.', '_')
-    Facter.add('ipaddress_' + network + '_' + cidr) do
-      setcode do
-        ipaddress
-      end
-    end
-    Facter.add('interface_' + network + '_' + cidr) do
+    Facter.add('interface_staging') do
       setcode do
         iface
       end
