@@ -46,8 +46,8 @@
 class rjil::ceph::osd (
   $mon_key,
   $osds                     = [],
-  $autodetect               = false,
-  $disk_exceptions          = [],
+  $autodetect,
+  $disk_exceptions,
   $osd_journal_type         = 'filesystem',
   $osd_journal_size         = 10,
   $storage_cluster_if       = eth1,
