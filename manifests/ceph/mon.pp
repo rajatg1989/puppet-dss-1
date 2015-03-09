@@ -31,7 +31,8 @@ class rjil::ceph::mon (
   $rgw_data_pools   = ['.rgw.buckets'],
   $pool_pg_num      = 128,
   $index_pool_pg_num= 32,
-  $pool_size  ,
+  $pool_size,
+  $min_pool_size,
   $data_pool_pg_num = 128,
 ) {
 
@@ -66,6 +67,7 @@ class rjil::ceph::mon (
     pg_num => $index_pool_pg_num,
     pgp_num => $index_pool_pg_num,
     size => $pool_size,
+    min_size => $min_pool_size,
     require => Ceph::Mon[$::hostname],
   }
 
@@ -74,6 +76,7 @@ class rjil::ceph::mon (
     pg_num => $data_pool_pg_num,
     pgp_num => $data_pool_pg_num,
     size => $pool_size,
+    min_size => $min_pool_size,
     require => Ceph::Mon[$::hostname],
   }
 
