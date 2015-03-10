@@ -69,3 +69,4 @@ ceph::conf::pool_default_size:  "%{hiera('rjil::ceph::pool_default_size')}"
 ceph::conf::pool_default_min_size: "%{hiera('rjil::ceph::pool_default_size')}"
 ceph::radosgw::debug_rgw: 5
 ceph::radosgw::rgw_thread_pool_size: 128
+rjil::ceph::storage_cluster_network: "10.140.214.0/23,10.140.222.0/23"

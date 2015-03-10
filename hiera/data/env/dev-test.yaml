@@ -19,9 +19,32 @@ rjil::system::proxies:
   https:
     url: "http://10.140.192.134:10000/"
 
-rjil::ceph::osd::autodetect: true
-rjil::ceph::osd::disk_exceptions: sda
+rjil::ceph::osd::autodetect: false
 
+rjil::ceph::osd::osds:
+    - sdb
+    - sdc
+    - sdd
+    - sde
+    - sdf
+    - sdg
+    - sdh
+    - sdi
+    - sdj
+    - sdk
+    - sdl
+    - sdm
+    - sdn
+    - sdo
+    - sdp
+    - sdq
+    - sdr
+    - sds
+    - sdt
+    - sdu
+    - sdv
+    - sdw
+    - sdx
 
 rjil::system::accounts::active_users: [rahul,harshalgupta,bafna,abhidixit,shivanshu21]
 rjil::system::accounts::sudo_users:
