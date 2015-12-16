@@ -779,7 +779,7 @@ rjil::ceph::pool_default_size: 3
 ceph::conf::pool_default_size:  "%{hiera('rjil::ceph::pool_default_size)}"
 ceph::conf::pool_default_min_size: 2
 ceph::conf::journal_size_mb: 4096
-ceph::conf::filestore_min_sync_interval: 10
+ceph::conf::filestore_min_sync_interval: 1
 ceph::conf::filestore_max_sync_interval: 15
 ceph::conf::filestore_op_threads: 64
 ceph::conf::rgw_thread_pool_size: 128
