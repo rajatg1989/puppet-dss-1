@@ -8,7 +8,7 @@ override_dh_install:
 	apt-get --assume-yes install git
 	export git_protocol=https
 	gem install librarian-puppet-simple --no-ri --no-rdoc -p http://10.140.218.59:3128/
-	rm -f $(CURDIR)/debian/puppet-jiocloud/usr/share/hiera/hiera.yaml
+	rm -f $(CURDIR)/debian/puppet-dss/usr/share/hiera/hiera.yaml
 	export git_protocol=https
 	git config --global http.proxy http://10.140.218.59:3128/
 	git config --global https.proxy http://10.140.218.59:3128/
