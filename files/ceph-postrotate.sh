@@ -22,6 +22,3 @@ if which initctl > /dev/null 2>&1 && [ -x `which initctl` ]; then
     done
 fi
 
-if [ -e "/etc/init.d/radosgw" ]; then
-    /etc/init.d/radosgw restart  >/dev/null
-fi
