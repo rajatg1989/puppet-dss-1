@@ -7,7 +7,7 @@ define rjil::jiocloud::logrotate(
   $compress      = true,
   $delaycompress = true,
   $ifempty       = false,
-  $copytruncate  = undef,
+  $copytruncate  = true,
   $dateext       = true,
   $ensure        = 'present',
   $postrotate    = undef,

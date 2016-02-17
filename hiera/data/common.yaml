@@ -852,8 +852,6 @@ ceph::conf::journal_size_mb: 4096
 ceph::conf::filestore_min_sync_interval: 1
 ceph::conf::filestore_max_sync_interval: 15
 ceph::conf::filestore_op_threads: 64
-ceph::conf::rgw_thread_pool_size: 128
-ceph::conf::debug_rgw: 5
 ceph::conf::osd_disk_threads: 4
 ceph::conf::osd_op_threads: 10
 
@@ -927,6 +925,8 @@ ceph::radosgw::gw_server_name: "%{hiera('radosgw_public_address')}"
 ceph::radosgw::radosgw_cert_file: /etc/ssl/certs/jiocloud.com.crt
 ceph::radosgw::radosgw_key_file: /etc/ssl/keys/jiocloud.com.key
 ceph::radosgw::radosgw_ca_file: /etc/ssl/certs/gd_bundle-g2-g1.crt
+ceph::radosgw::debug_rgw: 5
+ceph::radosgw::rgw_thread_pool_size: 128
 
 ceph::radosgw::listen_ssl: true
 

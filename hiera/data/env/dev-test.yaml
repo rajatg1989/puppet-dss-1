@@ -12,14 +12,13 @@ radosgw_internal_address: "dss-dev-test.jiocloud.com"
 
 rjil::system::proxies:
   "no":
-    url: "127.0.0.1,localhost,consul,jiocloudcom"
+    url: "127.0.0.1,localhost,consul"
   http:
     url: "http://10.140.192.24:10000/"
   https:
     url: "http://10.140.192.24:10000/"
 
 rjil::ceph::osd::osds:
-    - sda
     - sdb
     - sdc
     - sdd
@@ -44,6 +43,7 @@ rjil::ceph::osd::osds:
     - sdw
     - sdx
     - sdy 
+    - sdz
 
 rjil::system::accounts::active_users: [rahul,harshalgupta,bafna,abhidixit,shivanshu21]
 rjil::system::accounts::sudo_users:

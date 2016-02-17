@@ -27,12 +27,12 @@ class rjil::ceph::mon (
   $key,
   $public_if        = 'eth0',
   $mon_service_name = 'stmon',
-  $pools            = ['volumes','backups','images'],
+  $pools,
   $rgw_index_pools  = ['.rgw.root', '.rgw.control', '.rgw.gc', '.rgw', '.users.uid', '.rgw.buckets.index'],
   $rgw_data_pools   = ['.rgw.buckets'],
   $pool_pg_num      = 128,
   $index_pool_pg_num= 32,
-  $pool_size  = 3,
+  $pool_size  ,
   $data_pool_pg_num = 128,
 ) {
 
