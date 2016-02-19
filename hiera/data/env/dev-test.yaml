@@ -1,49 +1,27 @@
 rjil::jiocloud::consul::service::interval: "10s"
 
-public_address: "%{ipaddress_10_140_13_0_26}"
-public_interface: "%{interface_10_140_13_0_26}"
-private_address: "%{ipaddress_10_140_13_0_26}"
-private_interface: "%{interface_10_140_13_0_26}"
+public_address: "%{ipaddress}"
+public_interface: "%{interface_staging}"
+private_address: "%{ipaddress}"
+private_interface: "%{interface_staging}"
 
-keystone_public_address: "dss-dev-test.jiocloud.com"
+keystone_private_address: "iam.ind-west-1.staging.jiocloudservices.com"
+keystone_private_address: "iam.ind-west-1.staging.jiocloudservices.com"
 keystone_private_address: "dss-dev-test.jiocloud.com"
 radosgw_public_address: "dss-dev-test.jiocloud.com"
 radosgw_internal_address: "dss-dev-test.jiocloud.com"
 
 rjil::system::proxies:
   "no":
-    url: "127.0.0.1,localhost,consul"
+    url: "127.0.0.1,localhost,consul,jiocloudcom"
   http:
-    url: "http://10.140.192.24:10000/"
+    url: "http://10.140.192.134:10000/"
   https:
-    url: "http://10.140.192.24:10000/"
+    url: "http://10.140.192.134:10000/"
 
-rjil::ceph::osd::osds:
-    - sdb
-    - sdc
-    - sdd
-    - sde
-    - sdf
-    - sdg
-    - sdh
-    - sdi
-    - sdj
-    - sdk
-    - sdl
-    - sdm
-    - sdn
-    - sdo
-    - sdp
-    - sdq
-    - sdr
-    - sds
-    - sdt
-    - sdu
-    - sdv
-    - sdw
-    - sdx
-    - sdy 
-    - sdz
+rjil::ceph::osd::autodetect: true
+rjil::ceph::osd::disk_exceptions: sda
+
 
 rjil::system::accounts::active_users: [rahul,harshalgupta,bafna,abhidixit,shivanshu21]
 rjil::system::accounts::sudo_users:
@@ -62,3 +40,9 @@ rjil::ceph::osd::autodetect: false
 rjil::ceph::osd::osd_journal_size: 10
 rjil::ceph::mon::pool_pg_num: 32
 
+rjil::ceph::pool_default_size: 3 
+rjil::ceph::mon::pool_size : "%{hiera('rjil::ceph::pool_default_size')}"
+ceph::conf::pool_default_size:  "%{hiera('rjil::ceph::pool_default_size')}"
+ceph::conf::pool_default_min_size: "%{hiera('rjil::ceph::pool_default_size')}"
+ceph::radosgw::debug_rgw: 5
+ceph::radosgw::rgw_thread_pool_size: 128

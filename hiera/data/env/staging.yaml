@@ -1,12 +1,14 @@
 rjil::jiocloud::consul::service::interval: "10s"
 
-public_address: "%{ipaddress_10_140_214_0_23}"
-public_interface: "%{interface_10_140_214_0_23}"
-private_address: "%{ipaddress_10_140_214_0_23}"
-private_interface: "%{interface_10_140_214_0_23}"
+public_address: "%{ipaddress}"
+public_interface: "%{interface_staging}"
+private_address: "%{ipaddress}"
+private_interface: "%{interface_staging}"
 
-keystone_public_address: "dss-dev-test.jiocloud.com"
-keystone_private_address: "dss-dev-test.jiocloud.com"
+keystone_public_address: "iam.ind-west-1.staging.jiocloudservices.com"
+keystone_private_address: "iam.ind-west-1.staging.jiocloudservices.com"
+radosgw_public_address: "dss-dev-test.jiocloud.com"
+
 radosgw_public_address: "dss-dev-test.jiocloud.com"
 radosgw_internal_address: "dss-dev-test.jiocloud.com"
 
@@ -62,6 +64,7 @@ rjil::ceph::mon::pool_pg_num: 32
 
 rjil::ceph::pool_default_size: 6
 rjil::ceph::mon::pool_size : "%{hiera('rjil::ceph::pool_default_size')}"
+rjil::ceph::mon::min_pool_size : "%{hiera('rjil::ceph::pool_default_size')}"
 ceph::conf::pool_default_size:  "%{hiera('rjil::ceph::pool_default_size')}"
 ceph::conf::pool_default_min_size: "%{hiera('rjil::ceph::pool_default_size')}"
 ceph::radosgw::debug_rgw: 5

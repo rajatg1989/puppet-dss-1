@@ -632,7 +632,6 @@ rjil::system::apt::repositories:
   local:
     location: 'http://10.140.221.229/apt/bafna/bafna'
     architecture: 'amd64'
-    pin: '800'
     release: 'jiocloud'
     repos: 'main'
     include_src: false
@@ -702,7 +701,6 @@ rjil::system::apt::repositories:
   ceph:
     location: 'http://apt.overcastcloud.com/bafnag/bafnag'
     architecture: 'amd64'
-    pin: '600'
     release: 'overcast'
     repos: 'main'
     include_src: false

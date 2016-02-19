@@ -35,7 +35,7 @@ mod 'puppetlabs/concat',
 
 mod 'enovance/ceph',
   :git => "#{base_url}/bafna/puppet-ceph",
-  :ref => 'dev'
+  :ref => 'staging'
 
 mod 'puppetlabs/stdlib',
   :git => "#{base_url}/puppetlabs/puppetlabs-stdlib",
