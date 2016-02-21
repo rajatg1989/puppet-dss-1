@@ -893,8 +893,8 @@ rjil::ceph::osd::mon_key: "%{hiera('rjil::ceph::mon::key')}"
 ## Note: All devices should be mentioned with device names only
 ## e.g. for /dev/sdb, just specify sdb.
 ##
-# rjil::ceph::osd::disk_exceptions:
-#  - sdb
+rjil::ceph::osd::disk_exceptions:
+  - sda
 
 ##
 ## In case autodetect is false, rjil::ceph::osd::osds
