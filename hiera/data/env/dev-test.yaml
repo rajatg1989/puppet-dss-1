@@ -158,7 +158,7 @@ rjil::system::apt::repositories:
   dss-ceph:
     location: 'http://10.140.221.229/apt/JcsDSS2/JcsDSS2/'
     architecture: 'amd64'
-    release: 'overcast'
+    release: 'jiocloud'
     repos: 'main'
     include_src: false
     key: '28D9D6BD'
