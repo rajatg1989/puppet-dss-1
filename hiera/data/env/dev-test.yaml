@@ -43,6 +43,7 @@ rjil::ceph::osd::osd_journal_size: 10
 rjil::ceph::mon::pool_pg_num: 32
 
 rjil::ceph::pool_default_size: 3 
+rjil::ceph::mon::min_pool_size : 2
 rjil::ceph::mon::pool_size : "%{hiera('rjil::ceph::pool_default_size')}"
 ceph::conf::pool_default_size:  "%{hiera('rjil::ceph::pool_default_size')}"
 ceph::conf::pool_default_min_size: "%{hiera('rjil::ceph::pool_default_size')}"
@@ -156,7 +157,7 @@ rjil::system::apt::repositories:
       =pMQK
       -----END PGP PUBLIC KEY BLOCK-----
   dss-ceph:
-    location: 'http://10.140.221.229/apt/JcsDSS2/JcsDSS2/'
+    location: 'http://10.140.221.229/snapshots/e083e3cd-55b8-4d99-abd4-2dab664672a9/10.140.221.229/apt/JcsDSS2/JcsDSS2/'
     architecture: 'amd64'
     release: 'jiocloud'
     repos: 'main'
