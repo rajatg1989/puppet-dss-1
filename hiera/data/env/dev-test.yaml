@@ -86,7 +86,6 @@ rjil::system::apt::repositories:
       Chk4NnD90SYZt36sTLITe5O/BgYlRMqVo+bVj0tmjMJP/B4PZjABX7A=
       =iZW7
       -----END PGP PUBLIC KEY BLOCK-----
-
   puppet-dss:
     location: 'http://10.140.221.229/apt/JcsDSS/JcsDSS'
     architecture: 'amd64'
@@ -156,7 +155,6 @@ rjil::system::apt::repositories:
       umaofiqf+KcMPMZFm5OuIg==
       =pMQK
       -----END PGP PUBLIC KEY BLOCK-----
-
   dss-ceph:
     location: 'http://10.140.221.229/apt/JcsDSS2/JcsDSS2/'
     architecture: 'amd64'
@@ -226,7 +224,6 @@ rjil::system::apt::repositories:
       73AxTcAEBkzJPtDxTgAXd3w=
       =x4nl
       -----END PGP PUBLIC KEY BLOCK-----
-
   ubuntu:
     location: 'http://in.archive.ubuntu.com/ubuntu'
     release: 'trusty'
