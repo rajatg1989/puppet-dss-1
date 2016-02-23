@@ -19,32 +19,11 @@ rjil::system::proxies:
   https:
     url: "http://10.140.192.134:10000/"
 
-rjil::ceph::osd::autodetect: false
+rjil::ceph::osd::autodetect: true
 
-rjil::ceph::osd::osds:
-    - sdb
-    - sdc
-    - sdd
-    - sde
-    - sdf
-    - sdg
-    - sdh
-    - sdi
-    - sdj
-    - sdk
-    - sdl
-    - sdm
-    - sdn
-    - sdo
-    - sdp
-    - sdq
-    - sdr
-    - sds
-    - sdt
-    - sdu
-    - sdv
-    - sdw
-    - sdx
+rjil::ceph::osd::disk_exceptions:
+  - sda
+
 
 rjil::system::accounts::active_users: [rahul,harshalgupta,bafna,abhidixit,shivanshu21]
 rjil::system::accounts::sudo_users:
@@ -80,7 +59,6 @@ rjil::system::apt::repositories:
     key_content: |
       -----BEGIN PGP PUBLIC KEY BLOCK-----
       Version: GnuPG v1
-
       mQENBFM0FdsBCADbcuhgf4ny6HQXSCrskXK3hp8HUA4UbW9xIO/fqUzKTvxRuwUR
       yRZHXVdCCaLOD8En+h4fnAs2PY3ueVfcIDt9DsJcmqWE+cbFG191Yw8hQV/MtxXU
       YNAS6oKOwMheC3BtxdbplJ4hbg065m38wPmcgt/rJiAQZBxrKggCHTvIQunvJnmG
@@ -119,7 +97,7 @@ rjil::system::apt::repositories:
     key_content: |
       -----BEGIN PGP PUBLIC KEY BLOCK-----
       Version: GnuPG v1
-      NBFbFjrMBEAC9PjU8QPzvFfSD/MLn6xppTJWApOkRl+IKs02tJ+IMdJxzT0r9
+      mQINBFbFjrMBEAC9PjU8QPzvFfSD/MLn6xppTJWApOkRl+IKs02tJ+IMdJxzT0r9
       ls1cY5g7gCqvsnL+vyjdIkLB8Zuyj3wP7N92rOIA7sca7NlJE3vrxw1vdh41oeRe
       Q9L7NilviFhvjgGFYkSl4M5gKNFSX2LsfVAap01mQZ9+ZLdFjqM8gBpQPnszAtBc
       iMelvZgKbA7MdpSySnxVfk9hMH8qzmdzwmM5VAHweKIeGSoCTVl3O0haTtwW4rEP

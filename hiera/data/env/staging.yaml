@@ -82,7 +82,6 @@ rjil::system::apt::repositories:
     key_content: |
       -----BEGIN PGP PUBLIC KEY BLOCK-----
       Version: GnuPG v1
-
       mQENBFM0FdsBCADbcuhgf4ny6HQXSCrskXK3hp8HUA4UbW9xIO/fqUzKTvxRuwUR
       yRZHXVdCCaLOD8En+h4fnAs2PY3ueVfcIDt9DsJcmqWE+cbFG191Yw8hQV/MtxXU
       YNAS6oKOwMheC3BtxdbplJ4hbg065m38wPmcgt/rJiAQZBxrKggCHTvIQunvJnmG
@@ -121,7 +120,7 @@ rjil::system::apt::repositories:
     key_content: |
       -----BEGIN PGP PUBLIC KEY BLOCK-----
       Version: GnuPG v1
-      NBFbFjrMBEAC9PjU8QPzvFfSD/MLn6xppTJWApOkRl+IKs02tJ+IMdJxzT0r9
+      mQINBFbFjrMBEAC9PjU8QPzvFfSD/MLn6xppTJWApOkRl+IKs02tJ+IMdJxzT0r9
       ls1cY5g7gCqvsnL+vyjdIkLB8Zuyj3wP7N92rOIA7sca7NlJE3vrxw1vdh41oeRe
       Q9L7NilviFhvjgGFYkSl4M5gKNFSX2LsfVAap01mQZ9+ZLdFjqM8gBpQPnszAtBc
       iMelvZgKbA7MdpSySnxVfk9hMH8qzmdzwmM5VAHweKIeGSoCTVl3O0haTtwW4rEP
@@ -179,7 +178,6 @@ rjil::system::apt::repositories:
       1VpxDYwDI0PdJEs2tdcoLMTS3BeTO4MtCi549pT1G0fcIpzyN6UBAs7b+fLpGU1g
       umaofiqf+KcMPMZFm5OuIg==
       =pMQK
-
       -----END PGP PUBLIC KEY BLOCK-----
 
   dss-ceph:
@@ -250,7 +248,7 @@ rjil::system::apt::repositories:
       jOz2elsEFKJLqdyjHZPqCgoLEcGOFbd5j//B2ArLFzAYRTenb+J8ALeSsMBpgmRs
       73AxTcAEBkzJPtDxTgAXd3w=
       =x4nl
-       -----END PGP PUBLIC KEY BLOCK-----
+      -----END PGP PUBLIC KEY BLOCK-----
 
   ubuntu:
     location: 'http://in.archive.ubuntu.com/ubuntu'
