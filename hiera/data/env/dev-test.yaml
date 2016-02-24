@@ -38,7 +38,6 @@ rjil::base::self_signed_cert: true
 
 rjil::system::apt::enable_puppetlabs: false
 
-rjil::ceph::osd::autodetect: false
 rjil::ceph::osd::osd_journal_size: 10
 rjil::ceph::mon::pool_pg_num: 32
 
