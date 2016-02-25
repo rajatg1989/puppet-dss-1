@@ -120,5 +120,23 @@ class rjil::system(
     'net.ipv4.conf.default.accept_source_route': value => 0;
     'net.ipv4.conf.all.send_redirects':          value => 0;
     'net.ipv4.conf.default.send_redirects':      value => 0;
+    'net.core.rmem_max':		        value => 56623104;
+    'net.core.wmem_max':			value => 56623104;
+    'net.core.rmem_default':		        value => 56623104;
+    'net.core.wmem_default':			value => 56623104;
+    'net.core.optmem_max':			value => 40960;
+    'net.ipv4.tcp_rmem':		        value => "4096\t87380\t56623104";
+    'net.ipv4.tcp_wmem':		        value => "4096\t65536\t56623104";
+    'net.core.somaxconn':			value => 1024;
+    'net.core.netdev_max_backlog':		value => 50000;
+    'net.ipv4.tcp_max_syn_backlog':		value => 30000;
+    'net.ipv4.tcp_max_tw_buckets':		value => 2000000;
+    'net.ipv4.tcp_tw_recycle':			value => 1;
+    'net.ipv4.tcp_tw_reuse':			value => 1;
+    'net.ipv4.tcp_fin_timeout':		        value => 10;
+    'net.ipv4.tcp_slow_start_after_idle':	value => 0;
+    'net.ipv4.udp_rmem_min':			value => 8192;
+    'net.ipv4.udp_wmem_min':			value => 8192;
+    'kernel.pid_max':				value => 4194303;
   }
-}
+}	
