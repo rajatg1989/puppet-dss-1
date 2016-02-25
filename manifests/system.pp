@@ -1,3 +1,6 @@
+## Class: rjil::system
+## Purpose: to group all system level configuration together.
+
 class rjil::system(
   $proxies                       = {},
   $dhclient_override_domain_name = undef,
