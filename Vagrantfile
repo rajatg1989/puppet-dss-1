@@ -23,7 +23,7 @@ Vagrant.configure("2") do |config|
     override.vm.box = "fgrehm/trusty64-lxc"
   end
 
-  last_octet = 41
+  i = 10
   env_data = YAML.load_file("environment/#{layout}.yaml")
 
   map_data = YAML.load_file("environment/#{map}.map.yaml")
@@ -44,8 +44,8 @@ Vagrant.configure("2") do |config|
         override.vm.box = map_data['image']['virtualbox'][image]
 
         flavor = info['flavor'] || default_flavor
-        vb.memory = map_data['flavor'][flavor]['ram']
-        vb.cpus = map_data['flavor'][flavor]['cpu']
+        vb.memory = 1024
+        vb.cpus = 1
       end
 
       config.vm.synced_folder("hiera/", '/etc/puppet/hiera/')
@@ -56,12 +56,9 @@ Vagrant.configure("2") do |config|
       config.vm.synced_folder("lib/", '/etc/puppet/modules/rjil/lib/')
       config.vm.synced_folder(".", "/etc/puppet/manifests")
 
-      # Currently when virtual machine comes up, it gets a 172 IP from
-      # the internal DHCP of virtualbox, after the virtual machine comes up, the 
-      # DHCP server is disabled and the below command is executed on the VM so that
-      # it gets the IP from DHCP server on HTTPPROXY vm
-      config.vm.provision 'shell', :inline =>
-      'ifdown eth1;ifup eth1'
+      i=i+1
+      config.vm.network :private_network, ip: "192.168.100.#{i}"
+
      # This is required because otherwise hiera files will not be referenced at all
       config.vm.provision 'shell', :inline =>
       'cp /etc/puppet/hiera/hiera.yaml /etc/puppet/'
@@ -110,16 +107,9 @@ Vagrant.configure("2") do |config|
       config.vm.provision 'shell', :inline =>
       'puppet apply -e \'ini_setting { basemodulepath: path => "/etc/puppet/puppet.conf", section => main, setting => basemodulepath, value => "/etc/puppet/modules.overrides:/etc/puppet/modules" } ini_setting { default_manifest: path => "/etc/puppet/puppet.conf", section => main, setting => default_manifest, value => "/etc/puppet/manifests/site.pp" } ini_setting { disable_per_environment_manifest: path => "/etc/puppet/puppet.conf", section => main, setting => disable_per_environment_manifest, value => "true" }\''
       config.vm.provision 'shell', :inline =>
-      'puppet apply --detailed-exitcodes --debug -e "include rjil::jiocloud"; if [[ $? = 1 || $? = 4 || $? = 6 ]]; then apt-get update; puppet apply --detailed-exitcodes --debug -e "include rjil::jiocloud"; fi'
+      'puppet apply --detailed-exitcodes --debug /etc/puppet/manifests/site.pp; if [[ $? = 1 || $? = 4 || $? = 6 ]]; then apt-get update; puppet apply --detailed-exitcodes --debug /etc/puppet/manifests/site.pp; fi'
 
  
-      net_prefix = ENV['NET_PREFIX'] || "192.168.100.0"
-      nic_adapter= ENV['NIC_ADAPTER'] || `echo "No environment variable NIC_ADAPTER, set the NIC_ADAPTER you want to place the VM";exit 100`
-      if node_name == 'httpproxy1'
-        config.vm.network  "private_network", :ip => "192.168.100.10", :netmask => "255.255.255.0", :name => nic_adapter, :adapter => 2
-      else
-        config.vm.network "private_network", :type => :dhcp, :name => nic_adapter, :adapter => 2
-      end
     end
   end
 end
