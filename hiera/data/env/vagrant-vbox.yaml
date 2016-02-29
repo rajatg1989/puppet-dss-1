@@ -134,18 +134,33 @@ rjil::base::self_signed_cert: true
 
 rjil::system::apt::enable_puppetlabs: false
 
-rjil::ceph::osd::osd_journal_size: 2 
+#OSD Device Config
+rjil::ceph::osd::osd_journal_size: 2
+ceph::conf::filestore_min_sync_interval: 1
+ceph::conf::filestore_max_sync_interval: 8
+ceph::conf::filestore_op_threads: 64
+#Pool Config
 rjil::ceph::mon::pool_pg_num: 32
-
 rjil::ceph::pool_default_size: 1
 rjil::ceph::mon::min_pool_size : 1 
 rjil::ceph::mon::pool_size : "%{hiera('rjil::ceph::pool_default_size')}"
 ceph::conf::pool_default_size:  "%{hiera('rjil::ceph::pool_default_size')}"
 ceph::conf::pool_default_min_size: "%{hiera('rjil::ceph::pool_default_size')}"
+#RGW Config
 ceph::radosgw::debug_rgw: 5
-ceph::conf::debug_osd: 5
-ceph::conf::debug_mon: 5
+ceph::radosgw::rgw_obj_stripe_size: 20971520 #20 MB for now
 ceph::radosgw::rgw_thread_pool_size: 128
+## OSD Config
+ceph::conf::debug_osd: 5
+ceph::conf::osd_op_threads: 4
+ceph::conf::osd_disk_threads: 2
+ceph::conf::osd_op_num_shards: 3
+ceph::conf::osd_op_num_threads_per_shard: 5
+ceph::conf::osd_recovery_threads: 2
+ceph::conf::osd_disk_thread_ioprio_priority: 7
+ceph::conf::osd_disk_thread_ioprio_class: 'idle'
+#Mon Config
+ceph::conf::debug_mon: 10
 
 rjil::system::apt::repositories:
   rustedhalo:

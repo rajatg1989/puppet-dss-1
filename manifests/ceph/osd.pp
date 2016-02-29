@@ -49,7 +49,7 @@ class rjil::ceph::osd (
   $autodetect,
   $disk_exceptions,
   $osd_journal_type         = 'filesystem',
-  $osd_journal_size         = 10,
+  $osd_journal_size         = undef,
   $storage_cluster_if       = eth1,
   $storage_cluster_address  = undef,
   $public_address           = undef,
