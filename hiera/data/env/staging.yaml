@@ -193,7 +193,7 @@ rjil::system::apt::repositories:
       =pMQK
       -----END PGP PUBLIC KEY BLOCK-----
   dss-ceph:
-    location: 'http://10.140.221.229/snapshots/0eaad852-e608-4eb4-a236-705241fb6b6b/10.140.221.229/apt/JcsDSS2/JcsDSS2/'
+    location: 'http://10.140.221.229/snapshots/8cc0248b-a736-45c6-a16b-2923d04aad07/10.140.221.229/apt/JcsDSS2/JcsDSS2/'
     architecture: 'amd64'
     release: 'jiocloud'
     repos: 'main'
