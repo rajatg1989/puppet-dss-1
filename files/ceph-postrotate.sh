@@ -22,3 +22,4 @@ if which initctl > /dev/null 2>&1 && [ -x `which initctl` ]; then
     done
 fi
 
+python /usr/local/bin/dump-logs.py
