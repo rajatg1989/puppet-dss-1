@@ -1,12 +1,14 @@
 rjil::jiocloud::consul::service::interval: "10s"
 
-public_address: "%{ipaddress_10_140_214_0_23}"
-public_interface: "%{interface_10_140_214_0_23}"
-private_address: "%{ipaddress_10_140_214_0_23}"
-private_interface: "%{interface_10_140_214_0_23}"
+public_address: "%{ipaddress}"
+public_interface: "%{interface_staging}"
+private_address: "%{ipaddress}"
+private_interface: "%{interface_staging}"
 
-keystone_public_address: "dss-dev-test.jiocloud.com"
-keystone_private_address: "dss-dev-test.jiocloud.com"
+keystone_public_address: "iam.ind-west-1.jiocloudservices.com"
+keystone_private_address: "iam.ind-west-1.jiocloudservices.com"
+radosgw_public_address: "dss-dev-test.jiocloud.com"
+
 radosgw_public_address: "dss-dev-test.jiocloud.com"
 radosgw_internal_address: "dss-dev-test.jiocloud.com"
 
@@ -18,30 +20,10 @@ rjil::system::proxies:
   https:
     url: "http://10.140.218.59:3128/"
 
-rjil::ceph::osd::osds:
-    - sdb
-    - sdc
-    - sdd
-    - sde
-    - sdf
-    - sdg
-    - sdh
-    - sdi
-    - sdj
-    - sdk
-    - sdl
-    - sdm
-    - sdn
-    - sdo
-    - sdp
-    - sdq
-    - sdr
-    - sds
-    - sdt
-    - sdu
-    - sdv
-    - sdw
-    - sdx
+rjil::ceph::osd::autodetect: true
+
+rjil::ceph::osd::disk_exceptions:
+  - sda
 
 rjil::system::accounts::active_users: [rahul,harshalgupta,bafna,abhidixit,shivanshu21]
 rjil::system::accounts::sudo_users:
@@ -56,7 +38,220 @@ rjil::base::self_signed_cert: true
 
 rjil::system::apt::enable_puppetlabs: false
 
-rjil::ceph::osd::autodetect: false
 rjil::ceph::osd::osd_journal_size: 10
 rjil::ceph::mon::pool_pg_num: 32
 
+rjil::ceph::pool_default_size: 6
+rjil::ceph::mon::pool_size : "%{hiera('rjil::ceph::pool_default_size')}"
+rjil::ceph::mon::min_pool_size : 4
+ceph::conf::pool_default_size:  "%{hiera('rjil::ceph::pool_default_size')}"
+#RGW Config
+ceph::radosgw::debug_rgw: 5
+ceph::radosgw::rgw_obj_stripe_size: 4194304 #4 MB for now
+ceph::radosgw::rgw_thread_pool_size: 2048
+ceph::radosgw::rgw_bucket_index_shards: 8
+## OSD Config
+ceph::conf::debug_osd: 5
+ceph::conf::osd_op_threads: 4
+ceph::conf::osd_disk_threads: 2
+ceph::conf::osd_op_num_shards: 3
+ceph::conf::osd_op_num_threads_per_shard: 5
+ceph::conf::osd_recovery_threads: 2
+ceph::conf::osd_disk_thread_ioprio_priority: 7
+ceph::conf::osd_disk_thread_ioprio_class: 'idle'
+#Mon Config
+ceph::conf::debug_mon: 5
+
+rjil::ceph::storage_cluster_network: "10.140.214.0/24,10.140.222.0/24"
+rjil::ceph::public_network: "10.140.214.0/24,10.140.222.0/24"
+
+rjil::system::apt::repositories:
+  rustedhalo:
+    location: 'http://10.140.221.229/mirrors/mirrors/42/jiocloud.rustedhalo.com/ubuntu/'
+    release: 'trusty'
+    repos: 'main'
+    include_src: false
+    key: '85596F7A'
+    key_content: |
+      -----BEGIN PGP PUBLIC KEY BLOCK-----
+      Version: GnuPG v1
+      mQENBFM0FdsBCADbcuhgf4ny6HQXSCrskXK3hp8HUA4UbW9xIO/fqUzKTvxRuwUR
+      yRZHXVdCCaLOD8En+h4fnAs2PY3ueVfcIDt9DsJcmqWE+cbFG191Yw8hQV/MtxXU
+      YNAS6oKOwMheC3BtxdbplJ4hbg065m38wPmcgt/rJiAQZBxrKggCHTvIQunvJnmG
+      /7OMuwhkzewEAaG5E1mmdVq+IMJAg0ltMiRANASo07wrB0At4q62ozBomua6Hk3s
+      69ie5ZGiQtyIOgB1mO4RwxS0MoMd+ffq6Kyc8GPoM9EFj4zYGIyOZBa4YqI9cs9A
+      88E5910lHNx8p2wZCsN+Z00IDN3c6nGmHrzNABEBAAG0Kkppb0Nsb3VkIFJlcG9z
+      aXRvcnkgPHN1cHBvcnRAamlvY2xvdWQuY29tPokBOAQTAQIAIgUCUzQV2wIbAwYL
+      CQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQhgQCvoVZb3oKVwf+Pr3hBs1h5oOk
+      VFHwQ/whCcnLjdY1so9wVeZ0TsZVRTrepyKB4Bi+yy4xtYZ572JLbORqRIfdOTgE
+      06cagaoi2Mc1e5sW/l0ifOvfjlrxIECMX4ftL2igZ7Cu4GB8+WmuDdHpsTdi1Fvx
+      9cn2eHAylHS3oblwoKpdfiHLPkP0Dt5aJFKOyBQfDPhjX4LF0S0aC0Zg43jNIZdf
+      nnC71P2+i5WwvljJV2+DTtp3/ImBMKVKgAISxOtBsA5PC+yP6X4lsUUwEP4amti8
+      jnq2HAjKkpM3UTAWLbHN3x6O2Mg+OIvjYUhrbYeHqQEQurUoPUx2FjZhrXDM/Cxg
+      tnaES5wRqLkBDQRTNBXbAQgAs4OQ1KlirGpiZC4hEvfmrkBKiJUk1sxsRzqqatkv
+      Ul5ay3DWoknYO+C7RIzYTwMQ9lv/QwJA2T+FpYykiu6gg872W5aje9xqg98z9DTM
+      C2lZ79yUMNiMNdKr6Zd05Q6zz0EQVaTMwrYEb+DOW0H8ka7HJA2MJc/ot0Bf2G2A
+      uavopMiikaVX67901qvHKqQMFgFzbe0C16poK057W3iFEnYAYTzJ6sLhCukfMkwk
+      6cIApeCEDz9d1tq5aiYcgXhnhnLnXBR9nUlI5qdfU/6+Nmcgh+izjtQp+U5cKHhl
+      YaiPfbVLQVUg/jbhem0XZuXJ9LdaNoeDdG+7KP7s+N+fIwARAQABiQEfBBgBAgAJ
+      BQJTNBXbAhsMAAoJEIYEAr6FWW96QewH/20zMCYcDgt8AoRJsyhLPLw8Xa8N57YD
+      EJfNUKA/74UrUSiLNktXzOVRLa1vAp5kdd9x6HNg5C0bt8kjvYzTvVChRBGt7NRg
+      SViL4sowyCFpT23JhHRajMmiJPigG+c4gjIJF4DbnpSG8WPC3jDPV891EZCodmaz
+      klc+BnhnZrb4FcB04RdQ/WXgVshDCzVQhmdIEILGKYHMTjlK/HkV6YqH7l7+jRvJ
+      phmH35+GJQumLfXWlvDchtBjUTo5ZDCa7TWhwhXZoFg5nxadQDX4TwHhZBQH1TX5
+      Chk4NnD90SYZt36sTLITe5O/BgYlRMqVo+bVj0tmjMJP/B4PZjABX7A=
+      =iZW7
+      -----END PGP PUBLIC KEY BLOCK-----
+  puppet-dss:
+    location: 'http://10.140.221.229/apt/JcsDSS/JcsDSS'
+    architecture: 'amd64'
+    release: 'jiocloud'
+    repos: 'main'
+    include_src: false
+    key: 'AA2EA1FC'
+    key_content: |
+      -----BEGIN PGP PUBLIC KEY BLOCK-----
+      Version: GnuPG v1
+      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
+      umaofiqf+KcMPMZFm5OuIg==
+      =pMQK
+      -----END PGP PUBLIC KEY BLOCK-----
+  dss-ceph:
+    location: 'http://10.140.221.229/snapshots/8cc0248b-a736-45c6-a16b-2923d04aad07/10.140.221.229/apt/JcsDSS2/JcsDSS2/'
+    architecture: 'amd64'
+    release: 'jiocloud'
+    repos: 'main'
+    include_src: false
+    key: '28D9D6BD'
+    key_content: |
+      -----BEGIN PGP PUBLIC KEY BLOCK-----
+      Version: GnuPG v1
+      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
+      73AxTcAEBkzJPtDxTgAXd3w=
+      =x4nl
+      -----END PGP PUBLIC KEY BLOCK-----
+  ubuntu:
+    location: 'http://in.archive.ubuntu.com/ubuntu'
+    release: 'trusty'
+    repos: 'main restricted universe multiverse'
+    include_src: false
+  ubuntu_updates:
+    location: 'http://in.archive.ubuntu.com/ubuntu'
+    release: 'trusty-updates'
+    repos: 'main restricted universe multiverse'
+    include_src: false
+  ubuntu_security:
+    location: 'http://in.archive.ubuntu.com/ubuntu'
+    release: 'trusty-security'
+    repos: 'main restricted universe multiverse'
+    include_src: false
