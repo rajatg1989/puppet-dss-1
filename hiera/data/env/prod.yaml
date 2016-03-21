@@ -62,8 +62,8 @@ ceph::conf::osd_disk_thread_ioprio_class: 'idle'
 #Mon Config
 ceph::conf::debug_mon: 5
 
-rjil::ceph::storage_cluster_network: "10.140.214.0/24,10.140.222.0/24"
-rjil::ceph::public_network: "10.140.214.0/24,10.140.222.0/24"
+rjil::ceph::storage_cluster_network: "10.135.38.0/24,10.140.208.0/24"
+rjil::ceph::public_network: "10.135.38.0/24,10.140.208.0/24"
 
 rjil::system::apt::repositories:
   rustedhalo:
