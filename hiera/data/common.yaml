@@ -524,8 +524,8 @@ glance::keystone::auth::internal_address: "%{hiera('glance_internal_address')}"
 glance::keystone::auth::region: "%{hiera('region')}"
 
 keystone::endpoint::password: keystone
-keystone::endpoint::public_url: "%{hiera('rjil::keystone::protocol')}://%{hiera('keystone_public_address')}:%{hiera('keystone_port')}"
-keystone::endpoint::admin_url: "%{hiera('rjil::keystone::protocol')}://%{hiera('keystone_private_address')}:%{hiera('keystone_admin_port')}"
+keystone::endpoint::public_url: "%{hiera('rjil::keystone::protocol')}://%{hiera('keystone_public_address')}"
+keystone::endpoint::admin_url: "%{hiera('rjil::keystone::protocol')}://%{hiera('keystone_private_address')}"
 keystone::keystone::auth::region: "%{hiera('region')}"
 
 neutron::keystone::auth::password: neutron
