@@ -5,8 +5,8 @@ public_interface: "%{interface_staging}"
 private_address: "%{ipaddress}"
 private_interface: "%{interface_staging}"
 
-keystone_public_address: "iam.ind-west-1.jiocloudservices.com"
-keystone_private_address: "iam.ind-west-1.jiocloudservices.com"
+keystone_public_address: "iam.ind-west-1.internal.jiocloudservices.com"
+keystone_private_address: "iam.ind-west-1.internal.jiocloudservices.com"
 radosgw_public_address: "dss-dev-test.jiocloud.com"
 
 radosgw_public_address: "dss-dev-test.jiocloud.com"
