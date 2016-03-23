@@ -62,9 +62,6 @@ ceph::conf::osd_disk_thread_ioprio_class: 'idle'
 #Mon Config
 ceph::conf::debug_mon: 5
 
-keystone::endpoint::public_url: "%{hiera('rjil::keystone::protocol')}://%{hiera('keystone_public_address')}"
-keystone::endpoint::admin_url: "%{hiera('rjil::keystone::protocol')}://%{hiera('keystone_private_address')}"
-
 rjil::ceph::storage_cluster_network: "10.135.38.0/24,10.140.208.0/24"
 rjil::ceph::public_network: "10.135.38.0/24,10.140.208.0/24"
 
