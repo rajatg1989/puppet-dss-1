@@ -60,6 +60,30 @@ class rjil::jiocloud (
     require => Package['run-one'],
   }
 
+   file { '/usr/local/bin/dump-logs.py' :
+    source => 'puppet:///modules/rjil/dump-logs.py',
+    mode   => '0755',
+    owner  => 'root',
+    group  => 'root'
+  }
+ file { '/usr/local/bin/continuos-logs.py' :
+    source => 'puppet:///modules/rjil/continuos-logs.py',
+    mode   => '0755',
+    owner  => 'root',
+    group  => 'root'
+  }
+  cron { 'continuos-logs':
+    command => 'python /usr/local/bin/continuos-logs.py',
+    minute  => '0',
+  }
+
+  file { '/usr/local/bin/key.py' :
+    source => 'puppet:///modules/rjil/key.py',
+    mode   => '0755',
+    owner  => 'root',
+    group  => 'root'
+  }
+
   ini_setting { 'templatedir':
     ensure  => absent,
     path    => "/etc/puppet/puppet.conf",
